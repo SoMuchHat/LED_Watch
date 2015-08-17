@@ -1,0 +1,19 @@
+Physical and Mechanical Requirements:
+	1.4 inches in diameter or smaller
+	height: 1 cm MAX
+	Able to withstand normal wear while on wrist
+	At least two buttons
+	Able to attach standard "pin" style wristbands of width --
+	
+Electrical:
+	Powered from coin cell battery
+	132 LEDs to indicate hour, minute, second of the day
+	1 LED to indicate AM/PM
+	MCU:
+		Low power draw
+		Enough pins to control LEDs/Buttons
+		Real time clock support
+		Offers a sleep mode
+	Ability to set time of day
+	Ability to program/upgrade software easily in the future
+	
