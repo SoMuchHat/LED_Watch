@@ -1,5 +1,5 @@
 #include <msp430.h>
-
+#include "Headers/head.h"
 #include <ctpl.h>
 
 /*
@@ -10,6 +10,24 @@ int main(void)
     WDTCTL = WDTPW | WDTHOLD;    // Stop watchdog timer
 
     initialize();
+    int nextState = 0;
+    while(1)
+    {
+
+    	switch(nextState)
+    	{
+    	case ShowTime:
+    		break;
+    	case SetTime:
+    		break;
+    	case Sleep:
+    		break;
+
+    	}
+
+    }
+
+
     return 0;
 }
 
@@ -38,9 +56,10 @@ void initialize()
 	P3IE |= BIT6;  // Enable interrupt
 
 	P4DIR |= BIT0 + BIT1; // P4.0 and P4.1 outputs
-	P4OUT |= BIT1; // P4.1 high
+	P4OUT = BIT1; // P4.1 high
+
+	// External clock (XT1) and system clocks setup
+	PJSEL0 |= BIT4 + BIT5;
 
 	// RTC Setup
-
-	PJSEL0 |= BIT4 + BIT5;
 }
