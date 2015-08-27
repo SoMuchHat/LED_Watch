@@ -7,6 +7,7 @@
  */
 
 int nextState = 0;
+int HMS_selection = 0; // 0 = Hours, 1 = Minutes, 2 = Seconds
 
 int main(void)
 {
@@ -19,8 +20,28 @@ int main(void)
     	switch(nextState)
     	{
     	case ShowTime:
+
+
     		break;
     	case SetTime:
+    		switch(HMS_selection)
+    		{
+    		case HOURS:
+    		{
+    			// Blink current hour
+    			break;
+    		}
+    		case MINUTES:
+    		{
+    			// Blink current minute
+    			break;
+    		}
+    		case SECONDS:
+    		{
+    			// Blink current second
+    			break;
+    		}
+    		}
     		break;
     	case Sleep:
     		ctpl_enterLpm35(CTPL_DISABLE_RESTORE_ON_RESET);
@@ -48,14 +69,14 @@ void initialize()
 	P2DIR = 0xBF; // P2.6 input, all else output
 	P2OUT = 0xB4; // P2.2, P2.4, P2.5, P2.7 high, all else low. P2.6 pulldown selected
 	P2REN |= BIT6; // Enable P2.6 pulldown
-	P2IES =~ BIT6; // Interrupt on low -> high
+	P2IES |= BIT6; // Interrupt on high -> low
 	P2IE |= BIT6;  // Enable interrupt
 	P2IFG &= ~BIT6; // Clear P2.6 interrupt flag
 
 	P3DIR = 0xBF; // P3.6 input, all else output
 	P3OUT = 0x9B; // P3.1, P3.2, P3.3, P3.4, P3.7 high, all else low. P3.6 pulldown selected
 	P3REN |= BIT6; // Enable P3.6 pulldown
-	P3IES =~ BIT6; // Interrupt on low -> high
+	P3IES |= BIT6; // Interrupt on high -> low
 	P3IE |= BIT6;  // Enable interrupt
 	P3IFG &= ~BIT6; // Clear P3.6 interrupt flag
 
@@ -87,6 +108,13 @@ void initialize()
 	RTCHOUR = 0x00;
 	RTCCTL01 &= ~RTCHOLD; //Release RTC hold
 
+	// Timer setup (used for button qualification)
+	TA0CTL = TASSEL_1 + MC_1 + TACLR + TAIE; // Timer = ACLK, count up to , interrupt enabled
+	TA0CCR0 = 16384; // 0.5 seconds
+
+	// Turn off temp sensor
+	REFCTL0 |= REFTCOFF;
+	REFCTL0 &= ~OFIFG;
 
 	__bis_SR_register(GIE); //Enable interrupts
 }
@@ -98,15 +126,19 @@ __interrupt void rtc_isr(void)
 
 }
 
+#pragma vector = TIMER0_A0_VECTOR
+__interrupt void Timer0_A0_ISR(void)
+{
+	// Enable button interrupts
+	P2IE |= BIT6;
+	P3IE |= BIT6;
+	TA0R = 0; // Reset timer counter to 0
+}
+
+
 // Port 2 ISR
-#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
 #pragma vector=PORT2_VECTOR
 __interrupt void Port_2(void)
-#elif defined(__GNUC__)
-void __attribute__ ((interrupt(PORT2_VECTOR))) Port_2 (void)
-#else
-#error Compiler not supported!
-#endif
 {
 	switch(nextState)
 	{
@@ -122,23 +154,36 @@ void __attribute__ ((interrupt(PORT2_VECTOR))) Port_2 (void)
 	}
 	case SetTime:
 	{
-		//Switch between sec/min/hour select
+		switch(HMS_selection)
+		{
+		case HOURS:
+		{
+			HMS_selection = MINUTES;
+			break;
+		}
+		case MINUTES:
+		{
+			HMS_selection = SECONDS;
+			break;
+		}
+		case SECONDS:
+			// Exit out of SetTime, go into ShowTime
+			nextState = ShowTime;
+			// Reset HMS for next entry
+			HMS_selection = HOURS;
+			break;
+		}
 		break;
 	}
 	}
 	P2IFG &= ~BIT6;
-	P2IE = 0; 			// Disable interrupt from P2 and wait for standby clock to elapse before enabling again
+	P2IE = 0; 			// Disable interrupt from P2 and P3 and wait for standby clock to elapse before enabling again
+	P3IE = 0;
 }
 
 // Port 3 ISR
-#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
 #pragma vector=PORT3_VECTOR
 __interrupt void Port_3(void)
-#elif defined(__GNUC__)
-void __attribute__ ((interrupt(PORT3_VECTOR))) Port_3 (void)
-#else
-#error Compiler not supported!
-#endif
 {
 	switch(nextState)
 	{
@@ -154,10 +199,49 @@ void __attribute__ ((interrupt(PORT3_VECTOR))) Port_3 (void)
 	}
 	case SetTime:
 	{
-		//Increment sec/min/hour
+		switch(HMS_selector)
+		{
+		case HOURS:
+		{
+			// Wait until RTC can be modified safely
+			while(!RTCRDY);
+			// Increment hour
+			if(RTCHOUR < 23)
+			{
+				RTCHOUR = RTCHOUR + 1;
+			}
+			else
+			{
+				RTCHOUR = 0;
+			}
+		}
+
+		}
+		case MINUTES:
+		{
+			// Wait until RTC can be modified safely
+			while(!RTCRDY);
+			// Increment minute
+			if(RTCMINUTE < 59)
+			{
+				RTCMINUTE = RTCMINUTE + 1;
+			}
+			else
+			{
+				RTCMINUTE = 0;
+			}
+		}
+		case SECONDS:
+		{
+			// Wait until RTC can be modified safely
+			while(!RTCRDY);
+			// Reset seconds
+			RTCSECOND = 0;
+		}
 		break;
 	}
 	}
 	P3IFG &= ~BIT6;
-	P3IE = 0;		// Disable interrupt from P3 and wait for standby clock to elapse before enabling again
+	P2IE = 0;	// Disable interrupt from P2 and P3 and wait for standby clock to elapse before enabling again
+	P3IE = 0;
 }
