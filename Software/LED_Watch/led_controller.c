@@ -25,7 +25,7 @@ void(*led_seconds[60])();
 
 void(*led_minutes[60])();
 
-void(*led_hours[12])();
+void(*led_hours[24])();
 
 void initialize_leds()
 {
@@ -162,6 +162,19 @@ void initialize_leds()
 	led_hours[9] = ten_hours;
 	led_hours[10] = eleven_hours;
 	led_hours[11] = twelve_hours;
+	led_hours[12] = thirteen_hours;
+	led_hours[13] = fourteen_hours;
+	led_hours[14] = fifteen_hours;
+	led_hours[15] = sixteen_hours;
+	led_hours[16] = seventeen_hours;
+	led_hours[17] = eighteen_hours;
+	led_hours[18] = nineteen_hours;
+	led_hours[19] = twenty_hours;
+	led_hours[20] = twentyone_hours;
+	led_hours[21] = twentytwo_hours;
+	led_hours[22] = twentythree_hours;
+	led_hours[23] = twentyfour_hours;
+
 }
 
 void reset_leds()
@@ -1010,6 +1023,7 @@ void one_hours()
 	//Row 11, Column 12
 	P4OUT = (P4_OFF ^ BIT1);
 	P2OUT = (P2_OFF | BIT0);
+	PJOUT &= ~BIT0; // PM LED off
 	return;
 }
 void two_hours()
@@ -1017,6 +1031,7 @@ void two_hours()
 	//Row 11, Column 11
 	P4OUT = (P4_OFF ^ BIT1);
 	P2OUT = (P2_OFF | BIT1);
+	PJOUT &= ~BIT0; // PM LED off
 	return;
 }
 void three_hours()
@@ -1024,6 +1039,7 @@ void three_hours()
 	//Row 11, Column 10
 	P4OUT = (P4_OFF ^ BIT1);
 	P3OUT = (P3_OFF | BIT5);
+	PJOUT &= ~BIT0; // PM LED off
 	return;
 }
 void four_hours()
@@ -1031,6 +1047,7 @@ void four_hours()
 	//Row 11, Column 9
 	P4OUT = (P4_OFF ^ BIT1);
 	P1OUT = (P1_OFF | BIT7);
+	PJOUT &= ~BIT0; // PM LED off
 	return;
 }
 void five_hours()
@@ -1038,6 +1055,7 @@ void five_hours()
 	//Row 11, Column 8
 	P4OUT = (P4_OFF ^ BIT1);
 	P1OUT = (P1_OFF | BIT6);
+	PJOUT &= ~BIT0; // PM LED off
 	return;
 }
 void six_hours()
@@ -1045,6 +1063,7 @@ void six_hours()
 	//Row 11, Column 7
 	P4OUT = (P4_OFF ^ BIT1);
 	P2OUT = (P2_OFF | BIT3);
+	PJOUT &= ~BIT0; // PM LED off
 	return;
 }
 void seven_hours()
@@ -1052,6 +1071,7 @@ void seven_hours()
 	//Row 11, Column 6
 	P4OUT = (P4_OFF ^ BIT1);
 	P1OUT = (P1_OFF | BIT2);
+	PJOUT &= ~BIT0; // PM LED off
 	return;
 }
 void eight_hours()
@@ -1059,6 +1079,7 @@ void eight_hours()
 	//Row 11, Column 5
 	P4OUT = (P4_OFF ^ BIT1);
 	P1OUT = (P1_OFF | BIT1);
+	PJOUT &= ~BIT0; // PM LED off
 	return;
 }
 void nine_hours()
@@ -1066,6 +1087,7 @@ void nine_hours()
 	//Row 11, Column 4
 	P4OUT = (P4_OFF ^ BIT1);
 	P3OUT = (P3_OFF | BIT2);
+	PJOUT &= ~BIT0; // PM LED off
 	return;
 }
 void ten_hours()
@@ -1073,6 +1095,7 @@ void ten_hours()
 	//Row 11, Column 3
 	P4OUT = (P4_OFF ^ BIT1);
 	P1OUT = (P1_OFF | BIT4);
+	PJOUT &= ~BIT0; // PM LED off
 	return;
 }
 void eleven_hours()
@@ -1080,11 +1103,108 @@ void eleven_hours()
 	//Row 11, Column 2
 	P4OUT = (P4_OFF ^ BIT1);
 	P1OUT = (P1_OFF | BIT5);
+	PJOUT &= ~BIT0; // PM LED off
 	return;
 }
 void twelve_hours()
 {
 	//Row 11, Column 1
 	P4OUT = BIT0;
+	PJOUT &= ~BIT0; // PM LED off
+	return;
+}
+void thirteen_hours()
+{
+	//Row 11, Column 12
+	P4OUT = (P4_OFF ^ BIT1);
+	P2OUT = (P2_OFF | BIT0);
+	PJOUT |= BIT0; // PM LED on
+	return;
+}
+void fourteen_hours()
+{
+	//Row 11, Column 11
+	P4OUT = (P4_OFF ^ BIT1);
+	P2OUT = (P2_OFF | BIT1);
+	PJOUT |= BIT0; // PM LED on
+	return;
+}
+void fifteen_hours()
+{
+	//Row 11, Column 10
+	P4OUT = (P4_OFF ^ BIT1);
+	P3OUT = (P3_OFF | BIT5);
+	PJOUT |= BIT0; // PM LED on
+	return;
+}
+void sixteen_hours()
+{
+	//Row 11, Column 9
+	P4OUT = (P4_OFF ^ BIT1);
+	P1OUT = (P1_OFF | BIT7);
+	PJOUT |= BIT0; // PM LED on
+	return;
+}
+void seventeen_hours()
+{
+	//Row 11, Column 8
+	P4OUT = (P4_OFF ^ BIT1);
+	P1OUT = (P1_OFF | BIT6);
+	PJOUT |= BIT0; // PM LED on
+	return;
+}
+void eighteen_hours()
+{
+	//Row 11, Column 7
+	P4OUT = (P4_OFF ^ BIT1);
+	P2OUT = (P2_OFF | BIT3);
+	PJOUT |= BIT0; // PM LED on
+	return;
+}
+void nineteen_hours()
+{
+	//Row 11, Column 6
+	P4OUT = (P4_OFF ^ BIT1);
+	P1OUT = (P1_OFF | BIT2);
+	PJOUT |= BIT0; // PM LED on
+	return;
+}
+void twenty_hours()
+{
+	//Row 11, Column 5
+	P4OUT = (P4_OFF ^ BIT1);
+	P1OUT = (P1_OFF | BIT1);
+	PJOUT |= BIT0; // PM LED on
+	return;
+}
+void twentyone_hours()
+{
+	//Row 11, Column 4
+	P4OUT = (P4_OFF ^ BIT1);
+	P3OUT = (P3_OFF | BIT2);
+	PJOUT |= BIT0; // PM LED on
+	return;
+}
+void twentytwo_hours()
+{
+	//Row 11, Column 3
+	P4OUT = (P4_OFF ^ BIT1);
+	P1OUT = (P1_OFF | BIT4);
+	PJOUT |= BIT0; // PM LED on
+	return;
+}
+void twentythree_hours()
+{
+	//Row 11, Column 2
+	P4OUT = (P4_OFF ^ BIT1);
+	P1OUT = (P1_OFF | BIT5);
+	PJOUT |= BIT0; // PM LED on
+	return;
+}
+void twentyfour_hours()
+{
+	//Row 11, Column 1
+	P4OUT = BIT0;
+	PJOUT |= BIT0; // PM LED on
 	return;
 }

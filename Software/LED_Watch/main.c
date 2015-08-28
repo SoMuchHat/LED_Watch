@@ -7,7 +7,11 @@
  */
 
 int nextState = 0;
-int HMS_selection = 0; // 0 = Hours, 1 = Minutes, 2 = Seconds
+int HMS_selection = 0; 				// 0 = Hours, 1 = Minutes, 2 = Seconds
+int blink = 0;						// Blink off = 0, blink on = 1
+extern void(*led_seconds[60])();
+extern void(*led_minutes[60])();
+extern void(*led_hours[24])();
 
 int main(void)
 {
@@ -21,6 +25,13 @@ int main(void)
     	{
     	case ShowTime:
 
+    		while(!RTCRDY);
+    		(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
+    		__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
+    		(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
+    		__bis_SR_register(LPM3_bits+GIE);
+    		(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
+    		__bis_SR_register(LPM3_bits+GIE);
 
     		break;
     	case SetTime:
@@ -29,22 +40,55 @@ int main(void)
     		case HOURS:
     		{
     			// Blink current hour
+    			while(!RTCRDY);
+    			if(blink)
+    			{
+    				(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
+    			}
+    			__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
+				(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
+				__bis_SR_register(LPM3_bits+GIE);
+				(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
+				__bis_SR_register(LPM3_bits+GIE);
+
     			break;
     		}
     		case MINUTES:
     		{
     			// Blink current minute
+    			while(!RTCRDY);
+        		(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
+        		__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
+        		if(blink)
+        		{
+        			(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
+        		}
+        		__bis_SR_register(LPM3_bits+GIE);
+        		(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
+        		__bis_SR_register(LPM3_bits+GIE);
     			break;
     		}
     		case SECONDS:
     		{
     			// Blink current second
+    			while(!RTCRDY);
+        		(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
+        		__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
+        		(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
+        		__bis_SR_register(LPM3_bits+GIE);
+        		if(blink)
+        		{
+        			(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
+        		}
+        		__bis_SR_register(LPM3_bits+GIE);
     			break;
     		}
     		}
     		break;
     	case Sleep:
     		ctpl_enterLpm35(CTPL_DISABLE_RESTORE_ON_RESET);
+    		// On wakeup from 3.5, all registers have been cleared so reinitialize
+    		initialize();
     		break;
     	}
 
@@ -102,15 +146,24 @@ void initialize()
 	CSCTL0_H = 0x01; // Lock clock register
 
 	// RTC Setup
-	RTCCTL01 |= RTCBCD + RTCHOLD + RTCRDYIE; //BCD, Hold RTC, enable RTC ready interrupt (1 sec)
+	RTCCTL01 |= RTCBCD + RTCHOLD; //+ RTCRDYIE; //BCD, Hold RTC, enable RTC ready interrupt (1 sec)
 	RTCSEC = 0x00;
 	RTCMIN = 0x00;
 	RTCHOUR = 0x00;
 	RTCCTL01 &= ~RTCHOLD; //Release RTC hold
 
 	// Timer setup (used for button qualification)
-	TA0CTL = TASSEL_1 + MC_1 + TACLR + TAIE; // Timer = ACLK, count up to , interrupt enabled
-	TA0CCR0 = 16384; // 0.5 seconds
+	TA0CTL = TASSEL_1 + MC_0 + TACLR + TAIE; // Timer = ACLK, count up, ISR enabled, timer halted
+	TA0CCR0 = 16384; 	// 0.5 seconds
+
+	// Timer for sleeping between LEDs
+	TA1CTL = TASSEL_1 + MC_1 + TACLR + TAIE; // Timer = ACLK, count up, ISR enabled, timer halted
+	TA1CCR0 = 272;		// 32678 Hz / 272 = 120 Hz
+
+	// Timer for blinking LEDs
+	TB0CCTL0 = CCIE;
+	TB0CTL = TBSSEL_1 + MC_1 + TACLR; // Timer = ACLK, count up, ISR enabled, timer halted
+	TB0CCR0 = 21785;	// 32678 Hz / 21785 = ~1.5 Hz
 
 	// Turn off temp sensor
 	REFCTL0 |= REFTCOFF;
@@ -132,8 +185,23 @@ __interrupt void Timer0_A0_ISR(void)
 	// Enable button interrupts
 	P2IE |= BIT6;
 	P3IE |= BIT6;
+	TA0CTL = TASSEL_1 + MC_0 + TACLR + TAIE; // Turn off timer until button hit again
 	TA0R = 0; // Reset timer counter to 0
 }
+
+#pragma vector = TIMER1_A0_VECTOR
+__interrupt void Timer1_A0_ISR(void)
+{
+	TA1R = 0; // Reset timer counter to 0
+}
+
+#pragma vector = TIMER0_B0_VECTOR
+__interrupt void Timer2_A0_ISR(void)
+{
+	TB1R = 0; // Reset timer counter to 0
+	blink = 1;
+}
+
 
 
 // Port 2 ISR
@@ -179,6 +247,7 @@ __interrupt void Port_2(void)
 	P2IFG &= ~BIT6;
 	P2IE = 0; 			// Disable interrupt from P2 and P3 and wait for standby clock to elapse before enabling again
 	P3IE = 0;
+	TA0CTL |= MC_1; 	// Enable debounce timer
 }
 
 // Port 3 ISR
@@ -199,7 +268,7 @@ __interrupt void Port_3(void)
 	}
 	case SetTime:
 	{
-		switch(HMS_selector)
+		switch(HMS_selection)
 		{
 		case HOURS:
 		{
@@ -214,34 +283,36 @@ __interrupt void Port_3(void)
 			{
 				RTCHOUR = 0;
 			}
+			break;
 		}
 
-		}
 		case MINUTES:
 		{
 			// Wait until RTC can be modified safely
 			while(!RTCRDY);
 			// Increment minute
-			if(RTCMINUTE < 59)
+			if(RTCMIN < 59)
 			{
-				RTCMINUTE = RTCMINUTE + 1;
+				RTCMIN = RTCMIN + 1;
 			}
 			else
 			{
-				RTCMINUTE = 0;
+				RTCMIN = 0;
 			}
+			break;
 		}
 		case SECONDS:
 		{
 			// Wait until RTC can be modified safely
 			while(!RTCRDY);
 			// Reset seconds
-			RTCSECOND = 0;
+			RTCSEC = 0;
+			break;
 		}
-		break;
 	}
 	}
 	P3IFG &= ~BIT6;
 	P2IE = 0;	// Disable interrupt from P2 and P3 and wait for standby clock to elapse before enabling again
 	P3IE = 0;
+	TA0CTL |= MC_1;		// Enable debounce timer
 }
