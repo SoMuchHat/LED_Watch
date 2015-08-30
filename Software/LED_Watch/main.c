@@ -13,7 +13,7 @@ extern void(*led_seconds[60])();
 extern void(*led_minutes[60])();
 extern void(*led_hours[24])();
 
-int main(void)
+void main(void)
 {
     WDTCTL = WDTPW | WDTHOLD;    // Stop watchdog timer
 
@@ -24,65 +24,71 @@ int main(void)
     	switch(nextState)
     	{
     	case ShowTime:
-
-    		while(!RTCRDY);
-    		(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
-    		__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
-    		(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
-    		__bis_SR_register(LPM3_bits+GIE);
-    		(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
-    		__bis_SR_register(LPM3_bits+GIE);
-
+    		__bis_SR_register(LPM3_bits+GIE);	// Wait for interrupt (RTC)
+    		if(RTCRDY)
+    		{
+    			(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
+    			__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
+    			(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
+    			__bis_SR_register(LPM3_bits+GIE);
+    			(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
+    			__bis_SR_register(LPM3_bits+GIE);
+    		}
     		break;
     	case SetTime:
     		switch(HMS_selection)
     		{
     		case HOURS:
-    		{
     			// Blink current hour
-    			while(!RTCRDY);
-    			if(blink)
+    			__bis_SR_register(LPM3_bits+GIE);	// Wait for interrupt (RTC)
+    			if(RTCRDY)
     			{
-    				(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
+					if(blink)
+					{
+						(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
+						blink = 0;
+					}
+					__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
+					(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
+					__bis_SR_register(LPM3_bits+GIE);
+					(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
+					__bis_SR_register(LPM3_bits+GIE);
     			}
-    			__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
-				(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
-				__bis_SR_register(LPM3_bits+GIE);
-				(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
-				__bis_SR_register(LPM3_bits+GIE);
-
     			break;
-    		}
     		case MINUTES:
-    		{
     			// Blink current minute
-    			while(!RTCRDY);
-        		(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
-        		__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
-        		if(blink)
-        		{
-        			(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
-        		}
-        		__bis_SR_register(LPM3_bits+GIE);
-        		(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
-        		__bis_SR_register(LPM3_bits+GIE);
+    			__bis_SR_register(LPM3_bits+GIE);	// Wait for interrupt (RTC)
+    			if(RTCRDY)
+    			{
+					(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
+					__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
+					if(blink)
+					{
+						(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
+						blink = 0;
+					}
+					__bis_SR_register(LPM3_bits+GIE);
+					(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
+					__bis_SR_register(LPM3_bits+GIE);
+    			}
     			break;
-    		}
     		case SECONDS:
-    		{
     			// Blink current second
-    			while(!RTCRDY);
-        		(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
-        		__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
-        		(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
-        		__bis_SR_register(LPM3_bits+GIE);
-        		if(blink)
-        		{
-        			(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
-        		}
-        		__bis_SR_register(LPM3_bits+GIE);
+    			__bis_SR_register(LPM3_bits+GIE);	// Wait for interrupt (RTC)
+    			if(RTCRDY)
+    			{
+					(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
+					__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
+					(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
+					__bis_SR_register(LPM3_bits+GIE);
+					if(blink)
+					{
+						(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
+						blink = 0;
+					}
+					__bis_SR_register(LPM3_bits+GIE);
+    			}
     			break;
-    		}
     		}
     		break;
     	case Sleep:
@@ -91,11 +97,7 @@ int main(void)
     		initialize();
     		break;
     	}
-
     }
-
-
-    return 0;
 }
 
 void initialize()
@@ -146,7 +148,7 @@ void initialize()
 	CSCTL0_H = 0x01; // Lock clock register
 
 	// RTC Setup
-	RTCCTL01 |= RTCBCD + RTCHOLD; //+ RTCRDYIE; //BCD, Hold RTC, enable RTC ready interrupt (1 sec)
+	RTCCTL01 |= RTCBCD + RTCHOLD + RTCRDYIE; //BCD, Hold RTC, enable RTC ready interrupt (1 sec)
 	RTCSEC = 0x00;
 	RTCMIN = 0x00;
 	RTCHOUR = 0x00;
@@ -176,7 +178,7 @@ void initialize()
 #pragma vector=RTC_VECTOR
 __interrupt void rtc_isr(void)
 {
-
+	//Nothing required, used to wake MSP from sleep when RTC ready
 }
 
 #pragma vector = TIMER0_A0_VECTOR
