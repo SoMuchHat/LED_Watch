@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name LED_Watch)(type KiCad)(uri "$(KIPRJMOD)/LED_Watch.pretty")(options "")(descr ""))
+)
