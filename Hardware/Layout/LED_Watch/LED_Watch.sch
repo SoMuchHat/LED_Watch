@@ -114,7 +114,7 @@ U 1 1 59670FD5
 P 9300 2400
 F 0 "J1" H 9300 2650 50  0000 C CNN
 F 1 "CONN_01X04" V 9400 2400 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch1.27mm" H 9300 2400 50  0001 C CNN
+F 2 "LED_Watch:Pin_Header_Straight_1x04_Pitch1.27mm" H 9300 2400 50  0001 C CNN
 F 3 "" H 9300 2400 50  0001 C CNN
 	1    9300 2400
 	1    0    0    -1  
@@ -309,7 +309,7 @@ U 1 1 596728B8
 P 1400 5250
 F 0 "L1" H 1400 5350 50  0000 C CNN
 F 1 "LED" H 1400 5150 50  0000 C CNN
-F 2 "LEDs:LED_0402" H 1400 5250 50  0001 C CNN
+F 2 "LED_Watch:LNJ247W82RA" H 1400 5250 50  0001 C CNN
 F 3 "" H 1400 5250 50  0001 C CNN
 	1    1400 5250
 	0    -1   -1   0   
@@ -441,10 +441,8 @@ Text Label 3500 1050 0    60   ~ 0
 COL7
 Text Label 3500 1150 0    60   ~ 0
 COL6
-Text Label 1900 2350 2    60   ~ 0
-B1
 Text Label 1900 1650 2    60   ~ 0
-COL2
+B1
 Text Label 1900 1250 2    60   ~ 0
 ROW3
 Text Label 1900 1150 2    60   ~ 0
@@ -455,18 +453,14 @@ Text Label 1900 1550 2    60   ~ 0
 ROW2
 Text Label 1900 1950 2    60   ~ 0
 ROW6
-Text Label 3500 1550 0    60   ~ 0
-COL3
-Text Label 3500 2550 0    60   ~ 0
-COL9
 Text Label 3500 1250 0    60   ~ 0
-COL5
+B2
 Text Label 1900 2550 2    60   ~ 0
-COL1
+COL12
 Text Label 1900 1850 2    60   ~ 0
 ROW10
 Text Label 1900 2450 2    60   ~ 0
-COL12
+COL1
 $Comp
 L +3.3V #PWR013
 U 1 1 599BE4B0
@@ -743,28 +737,21 @@ Wire Wire Line
 	4050 2700 4050 2800
 Connection ~ 3900 2700
 Text Label 3500 1850 0    60   ~ 0
-COL8
+COL10
 Text Label 3500 1750 0    60   ~ 0
 COL11
-Text Label 3500 1950 0    60   ~ 0
-COL10
 Text Label 3500 1350 0    60   ~ 0
 ROW7
-Text Label 3500 1650 0    60   ~ 0
-B2
 Wire Wire Line
 	2000 1350 1900 1350
 Text Label 3500 2450 0    60   ~ 0
 COL4
 Text Label 1900 2150 2    60   ~ 0
 ROW9
-NoConn ~ 1900 2250
 Text Label 1900 1350 2    60   ~ 0
 ROW4
 Text Label 1900 1450 2    60   ~ 0
 ROW1
-NoConn ~ 3500 2050
-NoConn ~ 3500 2150
 Text Label 3500 1450 0    60   ~ 0
 ROW8
 Text Label 1900 1050 2    60   ~ 0
@@ -774,4 +761,17 @@ Wire Wire Line
 	7600 4800 7300 4800
 Wire Wire Line
 	6500 4800 6900 4800
+Text Label 3500 2050 0    60   ~ 0
+COL9
+Text Label 3500 1950 0    60   ~ 0
+COL5
+Text Label 3500 2150 0    60   ~ 0
+COL8
+NoConn ~ 3500 2550
+Text Label 3500 1650 0    60   ~ 0
+COL3
+NoConn ~ 3500 1550
+Text Label 1900 2250 2    60   ~ 0
+COL2
+NoConn ~ 1900 2350
 $EndSCHEMATC
