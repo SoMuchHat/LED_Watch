@@ -30,7 +30,8 @@ void(*led_hours[24])();
 void initialize_leds()
 {
 	// Intialize LED lookup tables
-	led_seconds[0] = six_minutes; // changed for debug purposes
+
+	led_seconds[0] = zero_seconds;
 	led_seconds[1] = one_seconds;
 	led_seconds[2] = two_seconds;
 	led_seconds[3] = three_seconds;
@@ -70,16 +71,16 @@ void initialize_leds()
 	led_seconds[37] = thirtyseven_seconds;
 	led_seconds[38] = thirtyeight_seconds;
 	led_seconds[39] = thirtynine_seconds;
-	led_seconds[40] = fourty_seconds;
-	led_seconds[41] = fourtyone_seconds;
-	led_seconds[42] = fourtytwo_seconds;
-	led_seconds[43] = fourtythree_seconds;
-	led_seconds[44] = fourtyfour_seconds;
-	led_seconds[45] = fourtyfive_seconds;
-	led_seconds[46] = fourtysix_seconds;
-	led_seconds[47] = fourtyseven_seconds;
-	led_seconds[48] = fourtyeight_seconds;
-	led_seconds[49] = fourtynine_seconds;
+	led_seconds[40] = forty_seconds;
+	led_seconds[41] = fortyone_seconds;
+	led_seconds[42] = fortytwo_seconds;
+	led_seconds[43] = fortythree_seconds;
+	led_seconds[44] = fortyfour_seconds;
+	led_seconds[45] = fortyfive_seconds;
+	led_seconds[46] = fortysix_seconds;
+	led_seconds[47] = fortyseven_seconds;
+	led_seconds[48] = fortyeight_seconds;
+	led_seconds[49] = fortynine_seconds;
 	led_seconds[50] = fifty_seconds;
 	led_seconds[51] = fiftyone_seconds;
 	led_seconds[52] = fiftytwo_seconds;
@@ -89,6 +90,8 @@ void initialize_leds()
 	led_seconds[56] = fiftysix_seconds;
 	led_seconds[57] = fiftyseven_seconds;
 	led_seconds[58] = fiftyeight_seconds;
+	led_seconds[59] = fiftynine_seconds;
+
 
 	led_minutes[0] = zero_minutes;
 	led_minutes[1] = one_minutes;
@@ -130,16 +133,16 @@ void initialize_leds()
 	led_minutes[37] = thirtyseven_minutes;
 	led_minutes[38] = thirtyeight_minutes;
 	led_minutes[39] = thirtynine_minutes;
-	led_minutes[40] = fourty_minutes;
-	led_minutes[41] = fourtyone_minutes;
-	led_minutes[42] = fourtytwo_minutes;
-	led_minutes[43] = fourtythree_minutes;
-	led_minutes[44] = fourtyfour_minutes;
-	led_minutes[45] = fourtyfive_minutes;
-	led_minutes[46] = fourtysix_minutes;
-	led_minutes[47] = fourtyseven_minutes;
-	led_minutes[48] = fourtyeight_minutes;
-	led_minutes[49] = fourtynine_minutes;
+	led_minutes[40] = forty_minutes;
+	led_minutes[41] = fortyone_minutes;
+	led_minutes[42] = fortytwo_minutes;
+	led_minutes[43] = fortythree_minutes;
+	led_minutes[44] = fortyfour_minutes;
+	led_minutes[45] = fortyfive_minutes;
+	led_minutes[46] = fortysix_minutes;
+	led_minutes[47] = fortyseven_minutes;
+	led_minutes[48] = fortyeight_minutes;
+	led_minutes[49] = fortynine_minutes;
 	led_minutes[50] = fifty_minutes;
 	led_minutes[51] = fiftyone_minutes;
 	led_minutes[52] = fiftytwo_minutes;
@@ -150,39 +153,40 @@ void initialize_leds()
 	led_minutes[57] = fiftyseven_minutes;
 	led_minutes[58] = fiftyeight_minutes;
 
-	led_hours[0] = one_hours;
-	led_hours[1] = two_hours;
-	led_hours[2] = three_hours;
-	led_hours[3] = four_hours;
-	led_hours[4] = five_hours;
-	led_hours[5] = six_hours;
-	led_hours[6] = seven_hours;
-	led_hours[7] = eight_hours;
-	led_hours[8] = nine_hours;
-	led_hours[9] = ten_hours;
-	led_hours[10] = eleven_hours;
-	led_hours[11] = twelve_hours;
-	led_hours[12] = thirteen_hours;
-	led_hours[13] = fourteen_hours;
-	led_hours[14] = fifteen_hours;
-	led_hours[15] = sixteen_hours;
-	led_hours[16] = seventeen_hours;
-	led_hours[17] = eighteen_hours;
-	led_hours[18] = nineteen_hours;
-	led_hours[19] = twenty_hours;
-	led_hours[20] = twentyone_hours;
-	led_hours[21] = twentytwo_hours;
-	led_hours[22] = twentythree_hours;
-	led_hours[23] = twentyfour_hours;
+	led_hours[0] = zero_hours;
+	led_hours[1] = one_hours;
+	led_hours[2] = two_hours;
+	led_hours[3] = three_hours;
+	led_hours[4] = four_hours;
+	led_hours[5] = five_hours;
+	led_hours[6] = six_hours;
+	led_hours[7] = seven_hours;
+	led_hours[8] = eight_hours;
+	led_hours[9] = nine_hours;
+	led_hours[10] = ten_hours;
+	led_hours[11] = eleven_hours;
+	led_hours[12] = zero_hours;
+	led_hours[13] = one_hours;
+	led_hours[14] = two_hours;
+	led_hours[15] = three_hours;
+	led_hours[16] = four_hours;
+	led_hours[17] = five_hours;
+	led_hours[18] = six_hours;
+	led_hours[19] = seven_hours;
+	led_hours[20] = eight_hours;
+	led_hours[21] = nine_hours;
+	led_hours[22] = ten_hours;
+	led_hours[23] = eleven_hours;
 
 }
 
 void reset_leds()
 {
-	P1OUT = 0x08; // P1.3 high, all else low
-	P2OUT = 0xB4; // P2.2, P2.4, P2.5, P2.7 high, all else low
-	P3OUT = 0x9B; // P3.1, P3.2, P3.3, P3.4, P3.7 high, all else low
-	P4OUT = BIT1; // P4.1 high
+	P1OUT = P1_OFF;
+	P2OUT = P2_OFF;
+	P3OUT = P3_OFF;
+	P4OUT = P4_OFF;
+	PJOUT = PJ_OFF;
 }
 
 // LED pin "high" functions
@@ -191,416 +195,604 @@ void reset_leds()
 void zero_seconds()
 {
 	//Row 1, Column 1
-	P1OUT = (P1_OFF ^ BIT3);
-	P4OUT = (P4_OFF | BIT0);
-
+	P1OUT = P1_OFF;
+	P2OUT = P2_OFF ^ BIT3;
+	P3OUT = P3_OFF;
+	P4OUT = P4_OFF;
+	PJOUT = PJ_OFF | BIT0;
 	return;
 }
 void one_seconds()
 {
 	//Row 9, Column 12
-	//P2OUT ^= BIT2;
-	//P2OUT |= BIT0;
-	P2OUT = (P2_OFF ^ BIT2) | BIT0;
+    P1OUT = P1_OFF;
+    P2OUT = (P2_OFF ^ BIT3) | BIT7;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void two_seconds()
 {
 	//Row 9, Column 11
-	//P2OUT ^= BIT2;
-	//P2OUT |= BIT1;
-	P2OUT = (P2_OFF ^ BIT2) | BIT1;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT3;
+    P3OUT = P3_OFF | BIT7;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void three_seconds()
 {
 	//Row 9, Column 10
-	//P2OUT ^= BIT2;
-	//P3OUT |= BIT5;
-	P2OUT = (P2_OFF ^ BIT2);
-	P3OUT = (P3_OFF | BIT5);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = (P3_OFF ^ BIT3) | BIT6;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void four_seconds()
 {
 	//Row 9, Column 9
-	P2OUT = (P2_OFF ^ BIT2);
-	P1OUT = (P1_OFF | BIT7);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = (P3_OFF ^ BIT3) | BIT4;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void five_seconds()
 {
 	//Row 9, Column 8
-	P2OUT = (P2_OFF ^ BIT2);
-	P1OUT = (P1_OFF | BIT6);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT6;
+    P3OUT = P3_OFF ^ BIT3;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void six_seconds()
 {
 	//Row 9, Column 7
-	P2OUT = (P2_OFF ^ BIT2) | BIT3;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT3;
+    P4OUT = P4_OFF | BIT0;
+    PJOUT = PJ_OFF;
 	return;
 }
 void seven_seconds()
 {
 	//Row 9, Column 6
-	P2OUT = (P2_OFF ^ BIT2);
-	P1OUT = (P1_OFF | BIT2);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT3;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT1;
 	return;
 }
 void eight_seconds()
 {
 	//Row 9, Column 5
-	P2OUT = (P2_OFF ^ BIT2);
-	P1OUT = (P1_OFF | BIT1);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT1;
+    P3OUT = P3_OFF ^ BIT3;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void nine_seconds()
 {
 	//Row 9, Column 4
-	P2OUT = (P2_OFF ^ BIT2);
-	P3OUT = (P3_OFF | BIT2);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT0;
+    P3OUT = P3_OFF ^ BIT3;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void ten_seconds()
 {
 	//Row 9, Column 3
-	P2OUT = (P2_OFF ^ BIT2);
-	P1OUT = (P1_OFF | BIT4);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT3;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT3;
 	return;
 }
 void eleven_seconds()
 {
 	//Row 9, Column 2
-	P2OUT = (P2_OFF ^ BIT2);
-	P1OUT = (P1_OFF | BIT5);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT3;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT2;
 	return;
 }
 void twelve_seconds()
 {
 	//Row 9, Column 1
-	P2OUT = (P2_OFF ^ BIT2);
-	P4OUT = (P4_OFF | BIT0);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT3;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT0;
 	return;
 }
 
 void thirteen_seconds()
 {
 	//Row 7, Column 12
-	P3OUT = (P3_OFF ^ BIT7);
-	P2OUT = (P2_OFF | BIT0);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT7;
+    P3OUT = P3_OFF ^ BIT3;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fourteen_seconds()
 {
 	//Row 7, Column 11
-	P3OUT = (P3_OFF ^ BIT7);
-	P2OUT = (P2_OFF | BIT1);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = (P3_OFF ^ BIT3) | BIT7;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fifteen_seconds()
 {
 	//Row 7, Column 10
-	P3OUT = (P3_OFF ^ BIT7) | BIT5;
+    P1OUT = P1_OFF ^ BIT4;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT6;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void sixteen_seconds()
 {
 	//Row 7, Column 9
-	P3OUT = (P3_OFF ^ BIT7);
-	P1OUT = (P1_OFF | BIT7);
+    P1OUT = P1_OFF ^ BIT4;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT4;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void seventeen_seconds()
 {
 	//Row 7, Column 8
-	P3OUT = (P3_OFF ^ BIT7);
-	P1OUT = (P1_OFF | BIT6);
+    P1OUT = P1_OFF ^ BIT4;
+    P2OUT = P2_OFF | BIT6;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void eighteen_seconds()
 {
 	//Row 7, Column 7
-	P3OUT = (P3_OFF ^ BIT7);
-	P2OUT = (P2_OFF | BIT3);
+    P1OUT = P1_OFF ^ BIT4;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF | BIT0;
+    PJOUT = PJ_OFF;
 	return;
 }
 void nineteen_seconds()
 {
 	//Row 7, Column 6
-	P3OUT = (P3_OFF ^ BIT7);
-	P1OUT = (P1_OFF | BIT2);
+    P1OUT = P1_OFF ^ BIT4;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT1;
 	return;
 }
 void twenty_seconds()
 {
 	//Row 7, Column 5
-	P3OUT = (P3_OFF ^ BIT7);
-	P1OUT = (P1_OFF | BIT1);
+    P1OUT = P1_OFF ^ BIT4;
+    P2OUT = P2_OFF | BIT1;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void twentyone_seconds()
 {
 	//Row 7, Column 4
-	P3OUT = (P3_OFF ^ BIT7) | BIT2;
-	return;
+    P1OUT = P1_OFF ^ BIT4;
+    P2OUT = P2_OFF | BIT0;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
+    return;
 }
 void twentytwo_seconds()
 {
 	//Row 7, Column 3
-	P3OUT = (P3_OFF ^ BIT7);
-	P1OUT = (P1_OFF | BIT4);
+    P1OUT = P1_OFF ^ BIT4;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT3;
 	return;
 }
 void twentythree_seconds()
 {
 	//Row 7, Column 2
-	P3OUT = (P3_OFF ^ BIT7);
-	P1OUT = (P1_OFF | BIT5);
+    P1OUT = P1_OFF ^ BIT4;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT2;
 	return;
 }
 void twentyfour_seconds()
 {
 	//Row 7, Column 1
-	P3OUT = (P3_OFF ^ BIT7);
-	P4OUT = (P4_OFF | BIT0);
+    P1OUT = P1_OFF ^ BIT4;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT0;
 	return;
 }
 
 void twentyfive_seconds()
 {
 	//Row 5, Column 12
-	P2OUT = (P2_OFF ^ BIT7) | BIT0;
+    P1OUT = P1_OFF ^ BIT4;
+    P2OUT = P2_OFF | BIT7;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void twentysix_seconds()
 {
 	//Row 5, Column 11
-	P2OUT = (P2_OFF ^ BIT7) | BIT1;
+    P1OUT = P1_OFF ^ BIT4;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT7;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void twentyseven_seconds()
 {
 	//Row 5, Column 10
-	P2OUT = (P2_OFF ^ BIT7);
-	P3OUT = (P3_OFF | BIT5);
+    P1OUT = P1_OFF ^ BIT2;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT6;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void twentyeight_seconds()
 {
 	//Row 5, Column 9
-	P2OUT = (P2_OFF ^ BIT7);
-	P1OUT = (P1_OFF | BIT7);
+    P1OUT = P1_OFF ^ BIT2;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT4;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void twentynine_seconds()
 {
 	//Row 5, Column 8
-	P2OUT = (P2_OFF ^ BIT7);
-	P1OUT = (P1_OFF | BIT7);
+    P1OUT = P1_OFF ^ BIT2;
+    P2OUT = P2_OFF | BIT6;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void thirty_seconds()
 {
 	//Row 5, Column 7
-	P2OUT = (P2_OFF ^ BIT7) | BIT3;
-	return;
+    P1OUT = P1_OFF ^ BIT2;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF | BIT0;
+    PJOUT = PJ_OFF;
+    return;
 }
 void thirtyone_seconds()
 {
 	//Row 5, Column 6
-	P2OUT = (P2_OFF ^ BIT7);
-	P1OUT = (P1_OFF | BIT2);
+    P1OUT = P1_OFF ^ BIT2;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT1;
 	return;
 }
 void thirtytwo_seconds()
 {
 	//Row 5, Column 5
-	P2OUT = (P2_OFF ^ BIT7);
-	P1OUT = (P1_OFF | BIT1);
+    P1OUT = P1_OFF ^ BIT2;
+    P2OUT = P2_OFF | BIT1;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void thirtythree_seconds()
 {
 	//Row 5, Column 4
-	P2OUT = (P2_OFF ^ BIT7);
-	P3OUT = (P3_OFF | BIT2);
+    P1OUT = P1_OFF ^ BIT2;
+    P2OUT = P2_OFF | BIT0;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void thirtyfour_seconds()
 {
 	//Row 5, Column 3
-	P2OUT = (P2_OFF ^ BIT7);
-	P1OUT = (P1_OFF | BIT4);
+    P1OUT = P1_OFF ^ BIT2;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT3;
 	return;
 }
 void thirtyfive_seconds()
 {
 	//Row 5, Column 2
-	P2OUT = (P2_OFF ^ BIT7);
-	P1OUT = (P1_OFF | BIT5);
+    P1OUT = P1_OFF ^ BIT2;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT2;
 	return;
 }
 void thirtysix_seconds()
 {
 	//Row 5, Column 1
-	P2OUT = (P2_OFF ^ BIT7);
-	P4OUT = (P4_OFF | BIT0);
+    P1OUT = P1_OFF ^ BIT2;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT0;
 	return;
 }
 
 void thirtyseven_seconds()
 {
 	//Row 3, Column 12
-	P3OUT = (P3_OFF ^ BIT0);
-	P2OUT = (P2_OFF | BIT0);
+    P1OUT = P1_OFF ^ BIT2;
+    P2OUT = P2_OFF | BIT7;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void thirtyeight_seconds()
 {
 	//Row 3, Column 11
-	P3OUT = (P3_OFF ^ BIT0);
-	P2OUT = (P2_OFF | BIT1);
+    P1OUT = P1_OFF ^ BIT2;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT7;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void thirtynine_seconds()
 {
 	//Row 3, Column 10
-	P3OUT = (P3_OFF ^ BIT0) | BIT5;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = (P3_OFF ^ BIT2) | BIT6;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
-void fourty_seconds()
+void forty_seconds()
 {
 	//Row 3, Column 9
-	P3OUT = (P3_OFF ^ BIT0);
-	P1OUT = (P1_OFF | BIT7);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = (P3_OFF ^ BIT2) | BIT4;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
-void fourtyone_seconds()
+void fortyone_seconds()
 {
 	//Row 3, Column 8
-	P3OUT = (P3_OFF ^ BIT0);
-	P1OUT = (P1_OFF | BIT6);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT6;
+    P3OUT = P3_OFF ^ BIT2;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
-void fourtytwo_seconds()
+void fortytwo_seconds()
 {
 	//Row 3, Column 7
-	P3OUT = (P3_OFF ^ BIT0);
-	P2OUT = (P2_OFF | BIT3);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT2;
+    P4OUT = P4_OFF | BIT0;
+    PJOUT = PJ_OFF;
 	return;
 }
-void fourtythree_seconds()
+void fortythree_seconds()
 {
 	//Row 3, Column 6
-	P3OUT = (P3_OFF ^ BIT0);
-	P1OUT = (P1_OFF | BIT2);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT2;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT1;
 	return;
 }
-void fourtyfour_seconds()
+void fortyfour_seconds()
 {
 	//Row 3, Column 5
-	P3OUT = (P3_OFF ^ BIT0);
-	P1OUT = (P1_OFF | BIT1);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT1;
+    P3OUT = P3_OFF ^ BIT2;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
-void fourtyfive_seconds()
+void fortyfive_seconds()
 {
 	//Row 3, Column 4
-	P3OUT = (P3_OFF ^ BIT0) | BIT2;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT0;
+    P3OUT = P3_OFF ^ BIT2;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
-void fourtysix_seconds()
+void fortysix_seconds()
 {
 	//Row 3, Column 3
-	P3OUT = (P3_OFF ^ BIT0);
-	P1OUT = (P1_OFF | BIT4);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT2;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT3;
 	return;
 }
-void fourtyseven_seconds()
+void fortyseven_seconds()
 {
 	//Row 3, Column 2
-	P3OUT = (P3_OFF ^ BIT0);
-	P1OUT = (P1_OFF | BIT5);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT2;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT2;
 	return;
 }
-void fourtyeight_seconds()
+void fortyeight_seconds()
 {
 	//Row 3, Column 1
-	P3OUT = (P3_OFF ^ BIT0);
-	P4OUT = (P4_OFF | BIT0);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT2;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT0;
 	return;
 }
 
-void fourtynine_seconds()
+void fortynine_seconds()
 {
 	//Row 1, Column 12
-	P1OUT = (P1_OFF ^ BIT3);
-	P2OUT = (P2_OFF | BIT0);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT7;
+    P3OUT = P3_OFF ^ BIT2;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fifty_seconds()
 {
 	//Row 1, Column 11
-	P1OUT = (P1_OFF ^ BIT3);
-	P2OUT = (P2_OFF | BIT1);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = (P3_OFF ^ BIT2) | BIT7;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fiftyone_seconds()
 {
 	//Row 1, Column 10
-	P1OUT = (P1_OFF ^ BIT3);
-	P3OUT = (P3_OFF | BIT5);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT3;
+    P3OUT = P3_OFF | BIT6;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fiftytwo_seconds()
 {
 	//Row 1, Column 9
-	P1OUT = (P1_OFF ^ BIT3) | BIT7;
-	return;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT3;
+    P3OUT = P3_OFF | BIT4;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;	return;
 }
 void fiftythree_seconds()
 {
 	//Row 1, Column 8
-	P1OUT = (P1_OFF ^ BIT3) | BIT6;
+    P1OUT = P1_OFF;
+    P2OUT = (P2_OFF ^ BIT3) | BIT6;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fiftyfour_seconds()
 {
 	//Row 1, Column 7
-	P1OUT = (P1_OFF ^ BIT3);
-	P2OUT = (P2_OFF | BIT3);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT3;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF | BIT0;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fiftyfive_seconds()
 {
 	//Row 1, Column 6
-	P1OUT = (P1_OFF ^ BIT3) | BIT2;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT3;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT1;
 	return;
 }
 void fiftysix_seconds()
 {
 	//Row 1, Column 5
-	P1OUT = (P1_OFF ^ BIT3) | BIT1;
+    P1OUT = P1_OFF;
+    P2OUT = (P2_OFF ^ BIT3) | BIT1;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fiftyseven_seconds()
 {
 	//Row 1, Column 4
-	P1OUT = (P1_OFF ^ BIT3);
-	P3OUT = (P3_OFF | BIT2);
+    P1OUT = P1_OFF;
+    P2OUT = (P2_OFF ^ BIT3) | BIT0;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fiftyeight_seconds()
 {
 	//Row 1, Column 3
-	P1OUT = (P1_OFF ^ BIT3) | BIT4;
-	return;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT3;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT3;
+    return;
 }
 void fiftynine_seconds()
 {
 	//Row 1, Column 2
-	P1OUT = (P1_OFF ^ BIT3) | BIT5;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT3;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT2;
 	return;
 }
 
@@ -609,602 +801,719 @@ void fiftynine_seconds()
 void zero_minutes()
 {
 	//Row 2, Column 1
-	P3OUT = (P3_OFF ^ BIT1);
-	P4OUT = (P4_OFF | BIT0);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT4;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT0;
 	return;
 }
 void one_minutes()
 {
 	//Row 10, Column 12
-	P2OUT = (P2_OFF ^ BIT5) | BIT0;
+    P1OUT = P1_OFF;
+    P2OUT = (P2_OFF ^ BIT4) | BIT7;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void two_minutes()
 {
 	//Row 10, Column 11
-	P2OUT = (P2_OFF ^ BIT5) | BIT1;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT4;
+    P3OUT = P3_OFF | BIT7;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void three_minutes()
 {
 	//Row 10, Column 10
-	P2OUT = (P2_OFF ^ BIT5) | BIT5;
-	return;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = (P3_OFF ^ BIT0) | BIT6;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
+    return;
 }
 void four_minutes()
 {
 	//Row 10, Column 9
-	P2OUT = (P2_OFF ^ BIT5);
-	P1OUT = (P1_OFF | BIT7);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = (P3_OFF ^ BIT0) | BIT4;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void five_minutes()
 {
 	//Row 10, Column 8
-	P2OUT = (P2_OFF ^ BIT5);
-	P1OUT = (P1_OFF | BIT6);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT6;
+    P3OUT = P3_OFF ^ BIT0;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void six_minutes()
 {
 	//Row 10, Column 7
-	P2OUT = (P2_OFF ^ BIT5) | BIT3;
-	return;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT0;
+    P4OUT = P4_OFF | BIT0;
+    PJOUT = PJ_OFF;
+    return;
 }
 void seven_minutes()
 {
 	//Row 10, Column 6
-	P2OUT = (P2_OFF ^ BIT5);
-	P1OUT = (P1_OFF | BIT2);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT0;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT1;
 	return;
 }
 void eight_minutes()
 {
 	//Row 10, Column 5
-	P2OUT = (P2_OFF ^ BIT5);
-	P1OUT = (P1_OFF | BIT1);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT1;
+    P3OUT = P3_OFF ^ BIT0;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void nine_minutes()
 {
 	//Row 10, Column 4
-	P2OUT = (P2_OFF ^ BIT5);
-	P3OUT = (P3_OFF | BIT2);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT0;
+    P3OUT = P3_OFF ^ BIT0;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void ten_minutes()
 {
 	//Row 10, Column 3
-	P2OUT = (P2_OFF ^ BIT5);
-	P1OUT = (P1_OFF | BIT4);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT0;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT3;
 	return;
 }
 void eleven_minutes()
 {
 	//Row 10, Column 2
-	P2OUT = (P2_OFF ^ BIT5);
-	P1OUT = (P1_OFF | BIT5);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT0;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT2;
 	return;
 }
 void twelve_minutes()
 {
 	//Row 10, Column 1
-	P2OUT = (P2_OFF ^ BIT5);
-	P4OUT = (P4_OFF | BIT0);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT0;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT0;
 	return;
 }
 
 void thirteen_minutes()
 {
 	//Row 8, Column 12
-	P3OUT = (P3_OFF ^ BIT4);
-	P2OUT = (P2_OFF | BIT0);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT7;
+    P3OUT = P3_OFF ^ BIT0;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fourteen_minutes()
 {
 	//Row 8, Column 11
-	P3OUT = (P3_OFF ^ BIT4);
-	P2OUT = (P2_OFF | BIT1);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = (P3_OFF ^ BIT0) | BIT7;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fifteen_minutes()
 {
 	//Row 8, Column 10
-	P3OUT = (P3_OFF ^ BIT4) | BIT5;
+    P1OUT = P1_OFF ^ BIT5;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT6;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void sixteen_minutes()
 {
 	//Row 8, Column 9
-	P3OUT = (P3_OFF ^ BIT4);
-	P1OUT = (P1_OFF | BIT7);
+    P1OUT = P1_OFF ^ BIT5;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT4;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void seventeen_minutes()
 {
 	//Row 8, Column 8
-	P3OUT = (P3_OFF ^ BIT4);
-	P1OUT = (P1_OFF | BIT6);
+    P1OUT = P1_OFF ^ BIT5;
+    P2OUT = P2_OFF | BIT6;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void eighteen_minutes()
 {
 	//Row 8, Column 7
-	P3OUT = (P3_OFF ^ BIT4);
-	P2OUT = (P2_OFF | BIT3);
+    P1OUT = P1_OFF ^ BIT5;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF | BIT0;
+    PJOUT = PJ_OFF;
 	return;
 }
 void nineteen_minutes()
 {
 	//Row 8, Column 6
-	P3OUT = (P3_OFF ^ BIT4);
-	P1OUT = (P1_OFF | BIT2);
+    P1OUT = P1_OFF ^ BIT5;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT1;
 	return;
 }
 void twenty_minutes()
 {
 	//Row 8, Column 5
-	P3OUT = (P3_OFF ^ BIT4);
-	P1OUT = (P1_OFF | BIT1);
+    P1OUT = P1_OFF ^ BIT5;
+    P2OUT = P2_OFF | BIT1;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void twentyone_minutes()
 {
 	//Row 8, Column 4
-	P3OUT = (P3_OFF ^ BIT4) | BIT2;
+    P1OUT = P1_OFF ^ BIT5;
+    P2OUT = P2_OFF | BIT0;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void twentytwo_minutes()
 {
 	//Row 8, Column 3
-	P3OUT = (P3_OFF ^ BIT4);
-	P1OUT = (P1_OFF | BIT4);
+    P1OUT = P1_OFF ^ BIT5;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT3;
 	return;
 }
 void twentythree_minutes()
 {
 	//Row 8, Column 2
-	P3OUT = (P3_OFF ^ BIT4);
-	P1OUT = (P1_OFF | BIT5);
+    P1OUT = P1_OFF ^ BIT5;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT2;
 	return;
 }
 void twentyfour_minutes()
 {
 	//Row 8, Column 1
-	P3OUT = (P3_OFF ^ BIT4);
-	P4OUT = (P4_OFF | BIT0);
+    P1OUT = P1_OFF ^ BIT5;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT0;
 	return;
 }
 
 void twentyfive_minutes()
 {
 	//Row 6, Column 12
-	P2OUT = (P2_OFF ^ BIT4) | BIT0;
+    P1OUT = P1_OFF ^ BIT5;
+    P2OUT = P2_OFF | BIT7;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void twentysix_minutes()
 {
 	//Row 6, Column 11
-	P2OUT = (P2_OFF ^ BIT4) | BIT1;
+    P1OUT = P1_OFF ^ BIT5;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT7;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void twentyseven_minutes()
 {
 	//Row 6, Column 10
-	P2OUT = (P2_OFF ^ BIT4);
-	P3OUT = (P3_OFF | BIT5);
+    P1OUT = P1_OFF ^ BIT3;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT6;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void twentyeight_minutes()
 {
 	//Row 6, Column 9
-	P2OUT = (P2_OFF ^ BIT4);
-	P1OUT = (P1_OFF | BIT7);
+    P1OUT = P1_OFF ^ BIT3;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT4;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void twentynine_minutes()
 {
 	//Row 6, Column 8
-	P2OUT = (P2_OFF ^ BIT4);
-	P1OUT = (P1_OFF | BIT6);
+    P1OUT = P1_OFF ^ BIT3;
+    P2OUT = P2_OFF | BIT6;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void thirty_minutes()
 {
 	//Row 6, Column 7
-	P2OUT = (P2_OFF ^ BIT4) | BIT3;
+    P1OUT = P1_OFF ^ BIT3;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF | BIT0;
+    PJOUT = PJ_OFF;
 	return;
 }
 void thirtyone_minutes()
 {
 	//Row 6, Column 6
-	P2OUT = (P2_OFF ^ BIT4);
-	P1OUT = (P1_OFF | BIT2);
+    P1OUT = P1_OFF ^ BIT3;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT1;
 	return;
 }
 void thirtytwo_minutes()
 {
 	//Row 6, Column 5
-	P2OUT = (P2_OFF ^ BIT4);
-	P1OUT = (P1_OFF | BIT1);
+    P1OUT = P1_OFF ^ BIT3;
+    P2OUT = P2_OFF | BIT1;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void thirtythree_minutes()
 {
 	//Row 6, Column 4
-	P2OUT = (P2_OFF ^ BIT4);
-	P3OUT = (P3_OFF | BIT2);
+    P1OUT = P1_OFF ^ BIT3;
+    P2OUT = P2_OFF | BIT0;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void thirtyfour_minutes()
 {
-	//Row 6, Column 3
-	P2OUT = (P2_OFF ^ BIT4);
-	P1OUT = (P1_OFF | BIT4);
+    P1OUT = P1_OFF ^ BIT3;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT3;
 	return;
 }
 void thirtyfive_minutes()
 {
 	//Row 6, Column 2
-	P2OUT = (P2_OFF ^ BIT4);
-	P1OUT = (P1_OFF | BIT5);
+    P1OUT = P1_OFF ^ BIT3;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT2;
 	return;
 }
 void thirtysix_minutes()
 {
 	//Row 6, Column 1
-	P2OUT = (P2_OFF ^ BIT4);
-	P4OUT = (P4_OFF | BIT0);
+    P1OUT = P1_OFF ^ BIT3;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT0;
 	return;
 }
 
 void thirtyseven_minutes()
 {
 	//Row 4, Column 12
-	P3OUT = (P3_OFF ^ BIT3);
-	P2OUT = (P2_OFF | BIT0);
+    P1OUT = P1_OFF ^ BIT3;
+    P2OUT = P2_OFF | BIT7;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void thirtyeight_minutes()
 {
 	//Row 4, Column 11
-	P3OUT = (P3_OFF ^ BIT3);
-	P2OUT = (P2_OFF | BIT1);
+    P1OUT = P1_OFF ^ BIT3;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT7;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void thirtynine_minutes()
 {
 	//Row 4, Column 10
-	P3OUT = (P3_OFF ^ BIT3) | BIT5;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = (P3_OFF ^ BIT1) | BIT6;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
-void fourty_minutes()
+void forty_minutes()
 {
 	//Row 4, Column 9
-	P3OUT = (P3_OFF ^ BIT3);
-	P1OUT = (P1_OFF | BIT7);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = (P3_OFF ^ BIT1) | BIT4;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
-void fourtyone_minutes()
+void fortyone_minutes()
 {
 	//Row 4, Column 8
-	P3OUT = (P3_OFF ^ BIT3);
-	P1OUT = (P1_OFF | BIT6);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT6;
+    P3OUT = P3_OFF ^ BIT1;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
-void fourtytwo_minutes()
+void fortytwo_minutes()
 {
 	//Row 4, Column 7
-	P3OUT = (P3_OFF ^ BIT3);
-	P2OUT = (P2_OFF | BIT3);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT1;
+    P4OUT = P4_OFF | BIT0;
+    PJOUT = PJ_OFF;
 	return;
 }
-void fourtythree_minutes()
+void fortythree_minutes()
 {
-	//Row 4, Column 6
-	P3OUT = (P3_OFF ^ BIT3);
-	P1OUT = (P1_OFF | BIT2);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT1;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT1;
 	return;
 }
-void fourtyfour_minutes()
+void fortyfour_minutes()
 {
 	//Row 4, Column 5
-	P3OUT = (P3_OFF ^ BIT3);
-	P1OUT = (P1_OFF | BIT1);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT1;
+    P3OUT = P3_OFF ^ BIT1;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
-void fourtyfive_minutes()
+void fortyfive_minutes()
 {
 	//Row 4, Column 4
-	P3OUT = (P3_OFF ^ BIT3) | BIT2;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT0;
+    P3OUT = P3_OFF ^ BIT1;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
-void fourtysix_minutes()
+void fortysix_minutes()
 {
 	//Row 4, Column 3
-	P3OUT = (P3_OFF ^ BIT3);
-	P1OUT = (P1_OFF | BIT4);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT1;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT3;
 	return;
 }
-void fourtyseven_minutes()
+void fortyseven_minutes()
 {
 	//Row 4, Column 2
-	P3OUT = (P3_OFF ^ BIT3);
-	P1OUT = (P1_OFF | BIT5);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT1;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT2;
 	return;
 }
-void fourtyeight_minutes()
+void fortyeight_minutes()
 {
 	//Row 4, Column 1
-	P3OUT = (P3_OFF ^ BIT3);
-	P4OUT = (P4_OFF | BIT0);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF ^ BIT1;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT0;
 	return;
 }
 
-void fourtynine_minutes()
+void fortynine_minutes()
 {
 	//Row 2, Column 12
-	P3OUT = (P3_OFF ^ BIT1);
-	P2OUT = (P2_OFF | BIT0);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF | BIT7;
+    P3OUT = P3_OFF ^ BIT1;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fifty_minutes()
 {
 	//Row 2, Column 11
-	P3OUT = (P3_OFF ^ BIT1);
-	P2OUT = (P2_OFF | BIT1);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF;
+    P3OUT = (P3_OFF ^ BIT1) | BIT7;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fiftyone_minutes()
 {
 	//Row 2, Column 10
-	P3OUT = (P3_OFF ^ BIT1) | BIT5;
-	return;
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT4;
+    P3OUT = P3_OFF | BIT6;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;	return;
 }
 void fiftytwo_minutes()
 {
 	//Row 2, Column 9
-	P3OUT = (P3_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT7);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT4;
+    P3OUT = P3_OFF | BIT4;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fiftythree_minutes()
 {
 	//Row 2, Column 8
-	P3OUT = (P3_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT6);
+    P1OUT = P1_OFF;
+    P2OUT = (P2_OFF ^ BIT4) | BIT6;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fiftyfour_minutes()
 {
 	//Row 2, Column 7
-	P3OUT = (P3_OFF ^ BIT1);
-	P2OUT = (P2_OFF | BIT3);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT4;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF | BIT0;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fiftyfive_minutes()
 {
 	//Row 2, Column 6
-	P3OUT = (P3_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT2);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT4;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT1;
 	return;
 }
 void fiftysix_minutes()
 {
 	//Row 2, Column 5
-	P3OUT = (P3_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT1);
+    P1OUT = P1_OFF;
+    P2OUT = (P2_OFF ^ BIT4) | BIT1;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void fiftyseven_minutes()
 {
 	//Row 2, Column 4
-	P3OUT = (P3_OFF ^ BIT1) | BIT2;
-	return;
+    P1OUT = P1_OFF;
+    P2OUT = (P2_OFF ^ BIT4) | BIT0;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
+    return;
 }
 void fiftyeight_minutes()
 {
 	//Row 2, Column 3
-	P3OUT = (P3_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT4);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT4;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT3;
 	return;
 }
 void fiftynine_minutes()
 {
 	//Row 2, Column 2
-	P3OUT = (P3_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT5);
+    P1OUT = P1_OFF;
+    P2OUT = P2_OFF ^ BIT4;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT2;
 	return;
+}
+
+void zero_hours()
+{
+    P1OUT = P1_OFF ^ BIT1;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT0;
+    return;
 }
 
 void one_hours()
 {
 	//Row 11, Column 12
-	P4OUT = (P4_OFF ^ BIT1);
-	P2OUT = (P2_OFF | BIT0);
-	PJOUT &= ~BIT0; // PM LED off
+    P1OUT = P1_OFF ^ BIT1;
+    P2OUT = P2_OFF | BIT7;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void two_hours()
 {
-	//Row 11, Column 11
-	P4OUT = (P4_OFF ^ BIT1);
-	P2OUT = (P2_OFF | BIT1);
-	PJOUT &= ~BIT0; // PM LED off
+    P1OUT = P1_OFF ^ BIT1;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT7;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void three_hours()
 {
-	//Row 11, Column 10
-	P4OUT = (P4_OFF ^ BIT1);
-	P3OUT = (P3_OFF | BIT5);
-	PJOUT &= ~BIT0; // PM LED off
+    P1OUT = P1_OFF ^ BIT1;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF | BIT6;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void four_hours()
 {
-	//Row 11, Column 9
-	P4OUT = (P4_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT7);
-	PJOUT &= ~BIT0; // PM LED off
+    P1OUT = P1_OFF ^ BIT1;
+    P2OUT = P2_OFF | BIT6;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void five_hours()
 {
 	//Row 11, Column 8
-	P4OUT = (P4_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT6);
-	PJOUT &= ~BIT0; // PM LED off
+    P1OUT = P1_OFF ^ BIT1;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF | BIT0;
+    PJOUT = PJ_OFF;
 	return;
 }
 void six_hours()
 {
 	//Row 11, Column 7
-	P4OUT = (P4_OFF ^ BIT1);
-	P2OUT = (P2_OFF | BIT3);
-	PJOUT &= ~BIT0; // PM LED off
+    P1OUT = P1_OFF ^ BIT1;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT1;
 	return;
 }
 void seven_hours()
 {
 	//Row 11, Column 6
-	P4OUT = (P4_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT2);
-	PJOUT &= ~BIT0; // PM LED off
+    P1OUT = P1_OFF ^ BIT1;
+    P2OUT = P2_OFF | BIT1;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void eight_hours()
 {
 	//Row 11, Column 5
-	P4OUT = (P4_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT1);
-	PJOUT &= ~BIT0; // PM LED off
+    P1OUT = P1_OFF ^ BIT1;
+    P2OUT = P2_OFF | BIT0;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF;
 	return;
 }
 void nine_hours()
 {
 	//Row 11, Column 4
-	P4OUT = (P4_OFF ^ BIT1);
-	P3OUT = (P3_OFF | BIT2);
-	PJOUT &= ~BIT0; // PM LED off
+    P1OUT = P1_OFF ^ BIT1;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT3;
 	return;
 }
 void ten_hours()
 {
 	//Row 11, Column 3
-	P4OUT = (P4_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT4);
-	PJOUT &= ~BIT0; // PM LED off
+    P1OUT = P1_OFF ^ BIT1;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT2;
 	return;
 }
 void eleven_hours()
 {
 	//Row 11, Column 2
-	P4OUT = (P4_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT5);
-	PJOUT &= ~BIT0; // PM LED off
-	return;
-}
-void twelve_hours()
-{
-	//Row 11, Column 1
-	P4OUT = BIT0;
-	PJOUT &= ~BIT0; // PM LED off
-	return;
-}
-void thirteen_hours()
-{
-	//Row 11, Column 12
-	P4OUT = (P4_OFF ^ BIT1);
-	P2OUT = (P2_OFF | BIT0);
-	PJOUT |= BIT0; // PM LED on
-	return;
-}
-void fourteen_hours()
-{
-	//Row 11, Column 11
-	P4OUT = (P4_OFF ^ BIT1);
-	P2OUT = (P2_OFF | BIT1);
-	PJOUT |= BIT0; // PM LED on
-	return;
-}
-void fifteen_hours()
-{
-	//Row 11, Column 10
-	P4OUT = (P4_OFF ^ BIT1);
-	P3OUT = (P3_OFF | BIT5);
-	PJOUT |= BIT0; // PM LED on
-	return;
-}
-void sixteen_hours()
-{
-	//Row 11, Column 9
-	P4OUT = (P4_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT7);
-	PJOUT |= BIT0; // PM LED on
-	return;
-}
-void seventeen_hours()
-{
-	//Row 11, Column 8
-	P4OUT = (P4_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT6);
-	PJOUT |= BIT0; // PM LED on
-	return;
-}
-void eighteen_hours()
-{
-	//Row 11, Column 7
-	P4OUT = (P4_OFF ^ BIT1);
-	P2OUT = (P2_OFF | BIT3);
-	PJOUT |= BIT0; // PM LED on
-	return;
-}
-void nineteen_hours()
-{
-	//Row 11, Column 6
-	P4OUT = (P4_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT2);
-	PJOUT |= BIT0; // PM LED on
-	return;
-}
-void twenty_hours()
-{
-	//Row 11, Column 5
-	P4OUT = (P4_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT1);
-	PJOUT |= BIT0; // PM LED on
-	return;
-}
-void twentyone_hours()
-{
-	//Row 11, Column 4
-	P4OUT = (P4_OFF ^ BIT1);
-	P3OUT = (P3_OFF | BIT2);
-	PJOUT |= BIT0; // PM LED on
-	return;
-}
-void twentytwo_hours()
-{
-	//Row 11, Column 3
-	P4OUT = (P4_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT4);
-	PJOUT |= BIT0; // PM LED on
-	return;
-}
-void twentythree_hours()
-{
-	//Row 11, Column 2
-	P4OUT = (P4_OFF ^ BIT1);
-	P1OUT = (P1_OFF | BIT5);
-	PJOUT |= BIT0; // PM LED on
-	return;
-}
-void twentyfour_hours()
-{
-	//Row 11, Column 1
-	P4OUT = BIT0;
-	PJOUT |= BIT0; // PM LED on
+    P1OUT = P1_OFF ^ BIT1;
+    P2OUT = P2_OFF;
+    P3OUT = P3_OFF;
+    P4OUT = P4_OFF;
+    PJOUT = PJ_OFF | BIT0;
 	return;
 }

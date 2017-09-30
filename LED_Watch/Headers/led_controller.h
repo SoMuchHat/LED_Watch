@@ -8,10 +8,14 @@
 #ifndef HEADERS_LED_CONTROLLER_H_
 #define HEADERS_LED_CONTROLLER_H_
 
-#define P1_OFF 0x08
-#define P2_OFF 0xB4
-#define P3_OFF 0x9B
-#define P4_OFF 0x01
+#define P1_OFF 0x3E
+#define P2_OFF 0x18
+#define P3_OFF 0x0F
+#define P4_OFF 0x00
+#define PJ_OFF 0x00
+
+void initialize_leds();
+void reset_leds();
 
 void zero_seconds();
 void one_seconds();
@@ -53,16 +57,16 @@ void thirtysix_seconds();
 void thirtyseven_seconds();
 void thirtyeight_seconds();
 void thirtynine_seconds();
-void fourty_seconds();
-void fourtyone_seconds();
-void fourtytwo_seconds();
-void fourtythree_seconds();
-void fourtyfour_seconds();
-void fourtyfive_seconds();
-void fourtysix_seconds();
-void fourtyseven_seconds();
-void fourtyeight_seconds();
-void fourtynine_seconds();
+void forty_seconds();
+void fortyone_seconds();
+void fortytwo_seconds();
+void fortythree_seconds();
+void fortyfour_seconds();
+void fortyfive_seconds();
+void fortysix_seconds();
+void fortyseven_seconds();
+void fortyeight_seconds();
+void fortynine_seconds();
 void fifty_seconds();
 void fiftyone_seconds();
 void fiftytwo_seconds();
@@ -114,16 +118,16 @@ void thirtysix_minutes();
 void thirtyseven_minutes();
 void thirtyeight_minutes();
 void thirtynine_minutes();
-void fourty_minutes();
-void fourtyone_minutes();
-void fourtytwo_minutes();
-void fourtythree_minutes();
-void fourtyfour_minutes();
-void fourtyfive_minutes();
-void fourtysix_minutes();
-void fourtyseven_minutes();
-void fourtyeight_minutes();
-void fourtynine_minutes();
+void forty_minutes();
+void fortyone_minutes();
+void fortytwo_minutes();
+void fortythree_minutes();
+void fortyfour_minutes();
+void fortyfive_minutes();
+void fortysix_minutes();
+void fortyseven_minutes();
+void fortyeight_minutes();
+void fortynine_minutes();
 void fifty_minutes();
 void fiftyone_minutes();
 void fiftytwo_minutes();
@@ -135,6 +139,7 @@ void fiftyseven_minutes();
 void fiftyeight_minutes();
 void fiftynine_minutes();
 
+void zero_hours();
 void one_hours();
 void two_hours();
 void three_hours();
@@ -158,6 +163,5 @@ void twenty_hours();
 void twentyone_hours();
 void twentytwo_hours();
 void twentythree_hours();
-void twentyfour_hours();
 
 #endif /* HEADERS_LED_CONTROLLER_H_ */
