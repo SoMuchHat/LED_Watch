@@ -29,6 +29,11 @@ int rtc_minutes = 0;
 int rtc_hours = 0;
 int rtc_ready = 0;
 
+char set_seconds = 0;
+char set_minutes = 0;
+char set_hours = 0;
+char set_new_time = 0;
+
 char displayMode = DISPLAY_MODE_0;
 char disp_seconds = 0;
 char disp_minutes = 0;
@@ -637,8 +642,7 @@ void main(void)
                             ten_hours();
                             break;
 
-                        case 23
-                        :
+                        case 23:
                             eleven_hours();
                             break;
     	            }
@@ -653,64 +657,130 @@ void main(void)
 
     		break;
 
-    	/*
+
     	case SetTime:
     		switch(HMS_selection)
     		{
     		case HOURS:
     			// Blink current hour
-    			__bis_SR_register(LPM3_bits+GIE);	// Wait for interrupt (RTC)
-    			if(RTCRDY)
+    			if (blink == 1)
     			{
-					if(blink)
-					{
-						(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
-						blink = 0;
-					}
-					__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
-					(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
-					__bis_SR_register(LPM3_bits+GIE);
-					(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
-					__bis_SR_register(LPM3_bits+GIE);
+    			    switch (set_hours)
+    			    {
+                    case 0:
+                        zero_hours();
+                        break;
+
+                    case 1:
+                        one_hours();
+                        break;
+
+                    case 2:
+                        two_hours();
+                        break;
+
+                    case 3:
+                        three_hours();
+                        break;
+
+                    case 4:
+                        four_hours();
+                        break;
+
+                    case 5:
+                        five_hours();
+                        break;
+
+                    case 6:
+                        six_hours();
+                        break;
+
+                    case 7:
+                        seven_hours();
+                        break;
+
+                    case 8:
+                        eight_hours();
+                        break;
+
+                    case 9:
+                        nine_hours();
+                        break;
+
+                    case 10:
+                        ten_hours();
+                        break;
+
+                    case 11:
+                        eleven_hours();
+                        break;
+
+                    case 12:
+                        zero_hours();
+                        break;
+
+                    case 13:
+                        one_hours();
+                        break;
+
+                    case 14:
+                        two_hours();
+                        break;
+
+                    case 15:
+                        three_hours();
+                        break;
+
+                    case 16:
+                        four_hours();
+                        break;
+
+                    case 17:
+                        five_hours();
+                        break;
+
+                    case 18:
+                        six_hours();
+                        break;
+
+                    case 19:
+                        seven_hours();
+                        break;
+
+                    case 20:
+                        eight_hours();
+                        break;
+
+                    case 21:
+                        nine_hours();
+                        break;
+
+                    case 22:
+                        ten_hours();
+                        break;
+
+                    case 23:
+                        eleven_hours();
+                        break;
+    			    }
     			}
+    			else
+    			{
+    			    reset_leds();
+    			}
+
     			break;
     		case MINUTES:
     			// Blink current minute
-    			__bis_SR_register(LPM3_bits+GIE);	// Wait for interrupt (RTC)
-    			if(RTCRDY)
-    			{
-					(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
-					__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
-					if(blink)
-					{
-						(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
-						blink = 0;
-					}
-					__bis_SR_register(LPM3_bits+GIE);
-					(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
-					__bis_SR_register(LPM3_bits+GIE);
-    			}
+
     			break;
     		case SECONDS:
     			// Blink current second
-    			__bis_SR_register(LPM3_bits+GIE);	// Wait for interrupt (RTC)
-    			if(RTCRDY)
-    			{
-					(*led_hours[RTCHOUR])();		// Turn on LED corresponding to RTC hour
-					__bis_SR_register(LPM3_bits+GIE);	// Go to sleep until timer interrupt
-					(*led_minutes[RTCMIN])();		// Turn on LED corresponding to RTC minute
-					__bis_SR_register(LPM3_bits+GIE);
-					if(blink)
-					{
-						(*led_seconds[RTCSEC])();		// Turn on LED corresponding to RTC second
-						blink = 0;
-					}
-					__bis_SR_register(LPM3_bits+GIE);
-    			}
+
     			break;
     		}
     		break;
-    		*/
+
     	case Sleep:
     	    /*
     		ctpl_enterLpm35(CTPL_DISABLE_RESTORE_ON_RESET);
@@ -792,7 +862,7 @@ void initialize()
 	CSCTL2 = SELA_0 + SELS_3 + SELM_3; 		//ACLK = XT1 and MCLK = DCO
 	//CHANGE CSCTL3 DIVIDERS!
 	//CSCTL3 = DIVA_0 + DIVS_1 + DIVM_1;
-	CSCTL3 = DIVA_0 + DIVS_0 + DIVM_0;      // ACLK / 1, SMCLK / 1 (8 MHz), MCLK / 1 (8 MHz)
+	CSCTL3 = DIVA_0 + DIVS_5 + DIVM_0;      // ACLK / 1, SMCLK / 32 (250 kHz), MCLK / 1 (8 MHz)
 	CSCTL4 = XT1DRIVE_0;
 	CSCTL4 &= ~XT1OFF;
 
@@ -820,8 +890,12 @@ void initialize()
 	// Timer for sleeping between LED updating
 	// @TODO Consider running this timer off SMCLK. That way, it is disabled when in sleep mode 3.0
     TA1CCTL0 = CCIE;
-    TA1CCR0 = 14;      // 32678 Hz / 272 = 120 Hz
-	TA1CTL = TASSEL_1 + MC_1;
+    TA1CCR0 = 62500;                    // TASSEL_2 / ID (250 kHz / 4 == 62500) / 62500 = 1 Hz
+                                        // Used for blinking LEDs
+
+    TA1CCR1 = 63;                       // TASSEL_2 / ID (250 kHz / 4 == 62500) / 63 = ~ 1 kHz
+                                        // This timer is used for updating LEDs
+	TA1CTL = TASSEL_2 + MC_1 + ID_2 + TAIE;
 
 
 	/*
@@ -844,12 +918,26 @@ __interrupt void rtc_isr(void)
     switch (RTCIV)
     {
     case RTCIV_RTCRDYIFG:
+    {
+        if (set_new_time == 0)
+        {
+            rtc_seconds = RTCSEC;
+            rtc_minutes = RTCMIN;
+            rtc_hours = RTCHOUR;
+            rtc_ready = 1;
+        }
+        else
+        {
+            // Change RTC time to requested new time
+            rtc_seconds = (int)set_seconds;
+            rtc_minutes = (int)set_minutes;
+            rtc_hours = (int)set_hours;
+            set_new_time = 0;
+            nextState = ShowTime;
+        }
 
-        rtc_seconds = RTCSEC;
-        rtc_minutes = RTCMIN;
-        rtc_hours = RTCHOUR;
-        rtc_ready = 1;
         break;
+    }
     }
 }
 
@@ -868,9 +956,13 @@ __interrupt void Timer0_A0_ISR(void)
 #pragma vector = TIMER1_A0_VECTOR
 __interrupt void Timer1_A0_ISR(void)
 {
-    int interruptSource = TA1IV;
+    // Toggle blink
+    blink = blink ^ 1;
+
+    //int interruptSource = TA1IV;
 	//TA1R = 0; // Reset timer counter to 0
 
+    /*
     selectedRow = selectedRow + 1;
     if (selectedRow == NO_ROW)
     {
@@ -913,8 +1005,64 @@ __interrupt void Timer1_A0_ISR(void)
             }
         }
     }
+    */
 }
 
+#pragma vector = TIMER1_A1_VECTOR
+__interrupt void Timer1_A1_ISR(void)
+{
+    int interruptSource = TA1IV;
+
+    selectedRow = selectedRow + 1;
+    if (selectedRow == NO_ROW)
+    {
+        selectedRow = SECONDS_ROW;
+    }
+
+    if (displayMode == DISPLAY_MODE_0)
+    {
+        disp_seconds = rtc_seconds;
+        disp_minutes = rtc_minutes;
+        disp_hours = rtc_hours;
+    }
+
+    else if (displayMode == DISPLAY_MODE_1)
+    {
+        static char i = 0;
+
+        if (i == 0)
+        {
+            disp_seconds = rtc_seconds;
+        }
+        if (i == 1)
+        {
+            disp_seconds = rtc_minutes;
+            disp_minutes = rtc_minutes;
+        }
+        if (i == 2)
+        {
+            char hours = rtc_hours;
+            if (hours >= 12)
+            {
+                hours = hours - 12;
+            }
+            disp_seconds = 5 * hours;
+            disp_seconds = (disp_seconds == 0) ? 0 : (disp_seconds - 1);
+            disp_minutes = 5 * hours;
+            disp_minutes = (disp_minutes == 0) ? 0 : (disp_minutes - 1);
+            disp_hours = rtc_hours;
+        }
+
+        if (selectedRow == HOURS_ROW)
+        {
+            i = i + 1;
+            if (i >= 3)
+            {
+                i = 0;
+            }
+        }
+    }
+}
 
 
 // Port 1 ISR
@@ -965,7 +1113,25 @@ __interrupt void Port_1(void)
 	*/
 
     int interruptSource = P1IV;
-    displayMode = DISPLAY_MODE_1;
+    //displayMode = DISPLAY_MODE_1;
+
+    // Change mode to set time
+    if (nextState != SetTime)
+    {
+        nextState = SetTime;
+        return;
+    }
+
+    if (HMS_selection == 2)
+    {
+        // Change RTC values
+        set_new_time = 1;
+    }
+    else
+    {
+        HMS_selection = ((char)HMS_selection) + 1;
+    }
+
 }
 
 // Port 2 ISR
