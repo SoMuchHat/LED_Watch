@@ -1,0 +1,1 @@
+"./led_controller.obj" "./main.obj" "../lnk_msp430fr5721.cmd" -llibmath.a -llibc.a 

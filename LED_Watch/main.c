@@ -10,45 +10,50 @@
 #define DISPLAY_MODE_1  1
 #define DISPLAY_MODE_2  2
 
-int nextState = 1;
-int HMS_selection = 0; 				// 0 = Hours, 1 = Minutes, 2 = Seconds
-int blink = 1;						// Blink off = 0, blink on = 1
-
-typedef enum {
-    HOURS_ROW = 0,
-    MINUTES_ROW = 1,
-    SECONDS_ROW = 2,
-    NO_ROW = 3
-} selectedRow_t;
+volatile int nextState = 1;
+volatile int blink = 1;						// Blink off = 0, blink on = 1
 
 
 
-selectedRow_t selectedRow = SECONDS_ROW;
-int rtc_seconds = 0;
-int rtc_minutes = 0;
-int rtc_hours = 0;
-int rtc_ready = 0;
 
-char set_seconds = 0;
-char set_minutes = 0;
-char set_hours = 0;
-char set_new_time = 0;
 
-char displayMode = DISPLAY_MODE_0;
-char disp_seconds = 0;
-char disp_minutes = 0;
-char disp_hours = 0;
+volatile selectedRow_t selectedRow = SECONDS_ROW;
+volatile char rtc_seconds;
+volatile char rtc_minutes;
+volatile char rtc_hours;
 
-unsigned char button_shift_reg_1 = 0;
-unsigned char button_shift_reg_2 = 0;
+volatile int set_new_time;
+
+volatile char displayMode = DISPLAY_MODE_0;
+volatile char disp_seconds;
+volatile char disp_minutes;
+volatile char disp_hours;
+
+volatile unsigned char button_shift_reg_1 = 0;
+volatile unsigned char button_shift_reg_2 = 0;
+
+volatile unsigned char button1_hold_seconds = 0;
+volatile unsigned char button2_hold_seconds = 0;
 
 void main(void)
 {
     WDTCTL = WDTPW + WDTHOLD;    // Stop watchdog timer
 
+    rtc_seconds = 0;
+    rtc_minutes = 0;
+    rtc_hours = 0;
+
+    set_new_time = 0;
+
+    disp_seconds = 0;
+    disp_minutes = 0;
+    disp_hours = 0;
+
     initialize();
 
-    int index = 0;
+    char lastButton1State = 0;
+    char lastButton2State = 0;
+
     while(1)
     {
     	switch(nextState)
@@ -57,1239 +62,82 @@ void main(void)
     	case SetTime:
     	case ShowTime:
 
-    	    reset_leds();
-    	    // This is going to be annoying to read... not enough memory for a jump table
-    	    switch (selectedRow)
+    	    // Handle how the LEDs are displayed
+    	    if (nextState != SetTime)
     	    {
-    	        case SECONDS_ROW:
-    	            if (blink == 1)
-    	            {
-                        switch (disp_seconds)
+                if (displayMode == DISPLAY_MODE_0)
+                {
+                    disp_seconds = rtc_seconds;
+                    disp_minutes = rtc_minutes;
+                    disp_hours = rtc_hours;
+                }
+
+                else if (displayMode == DISPLAY_MODE_1)
+                {
+
+                    /*
+                    static char i = 0;
+
+                    if (i == 0)
+                    {
+                        disp_seconds = rtc_seconds;
+                    }
+                    if (i == 1)
+                    {
+                        disp_seconds = rtc_minutes;
+                        disp_minutes = rtc_minutes;
+                    }
+                    if (i == 2)
+                    {
+                        char hours = rtc_hours;
+                        if (hours >= 12)
                         {
-                            case 0:
-                                zero_seconds();
-                                break;
-                            case 1:
-                                one_seconds();
-                                break;
-
-                            case 2:
-                                two_seconds();
-                                break;
-
-                            case 3:
-                                three_seconds();
-                                break;
-
-                            case 4:
-                                four_seconds();
-                                break;
-
-                            case 5:
-                                five_seconds();
-                                break;
-
-                            case 6:
-                                six_seconds();
-                                break;
-
-                            case 7:
-                                seven_seconds();
-                                break;
-
-                            case 8:
-                                eight_seconds();
-                                break;
-
-                            case 9:
-                                nine_seconds();
-                                break;
-
-                            case 10:
-                                ten_seconds();
-                                break;
-
-                            case 11:
-                                eleven_seconds();
-                                break;
-
-                            case 12:
-                                twelve_seconds();
-                                break;
-
-                            case 13:
-                                thirteen_seconds();
-                                break;
-
-                            case 14:
-                                fourteen_seconds();
-                                break;
-
-                            case 15:
-                                fifteen_seconds();
-                                break;
-
-                            case 16:
-                                sixteen_seconds();
-                                break;
-
-                            case 17:
-                                seventeen_seconds();
-                                break;
-
-                            case 18:
-                                eighteen_seconds();
-                                break;
-
-                            case 19:
-                                nineteen_seconds();
-                                break;
-
-                            case 20:
-                                twenty_seconds();
-                                break;
-
-                            case 21:
-                                twentyone_seconds();
-                                break;
-
-                            case 22:
-                                twentytwo_seconds();
-                                break;
-
-                            case 23:
-                                twentythree_seconds();
-                                break;
-
-                            case 24:
-                                twentyfour_seconds();
-                                break;
-
-                            case 25:
-                                twentyfive_seconds();
-                                break;
-
-                            case 26:
-                                twentysix_seconds();
-                                break;
-
-                            case 27:
-                                twentyseven_seconds();
-                                break;
-
-                            case 28:
-                                twentyeight_seconds();
-                                break;
-
-                            case 29:
-                                twentynine_seconds();
-                                break;
-
-                            case 30:
-                                thirty_seconds();
-                                break;
-
-                            case 31:
-
-                                thirtyone_seconds();
-                                break;
-
-                            case 32:
-                                thirtytwo_seconds();
-                                break;
-
-                            case 33:
-                                thirtythree_seconds();
-                                break;
-
-                            case 34:
-                                thirtyfour_seconds();
-                                break;
-
-                            case 35:
-                                thirtyfive_seconds();
-                                break;
-
-                            case 36:
-                                thirtysix_seconds();
-                                break;
-
-                            case 37:
-                                thirtyseven_seconds();
-                                break;
-
-                            case 38:
-                                thirtyeight_seconds();
-                                break;
-
-                            case 39:
-                                thirtynine_seconds();
-                                break;
-
-                            case 40:
-                                forty_seconds();
-                                break;
-
-                            case 41:
-                                fortyone_seconds();
-                                break;
-
-                            case 42:
-                                fortytwo_seconds();
-                                break;
-
-                            case 43:
-                                fortythree_seconds();
-                                break;
-
-                            case 44:
-                                fortyfour_seconds();
-                                break;
-
-                            case 45:
-                                fortyfive_seconds();
-                                break;
-
-                            case 46:
-                                fortysix_seconds();
-                                break;
-
-                            case 47:
-                                fortyseven_seconds();
-                                break;
-
-                            case 48:
-                                fortyeight_seconds();
-                                break;
-
-                            case 49:
-                                fortynine_seconds();
-                                break;
-
-                            case 50:
-                                fifty_seconds();
-                                break;
-
-                            case 51:
-                                fiftyone_seconds();
-                                break;
-
-                            case 52:
-                                fiftytwo_seconds();
-                                break;
-
-                            case 53:
-                                fiftythree_seconds();
-                                break;
-
-                            case 54:
-                                fiftyfour_seconds();
-                                break;
-
-                            case 55:
-                                fiftyfive_seconds();
-                                break;
-
-                            case 56:
-                                fiftysix_seconds();
-                                break;
-
-                            case 57:
-                                fiftyseven_seconds();
-                                break;
-
-                            case 58:
-                                fiftyeight_seconds();
-                                break;
-
-                            case 59:
-                                fiftynine_seconds();
-                                break;
+                            hours = hours - 12;
                         }
-    	            }
-                    break;
+                        disp_seconds = 5 * hours;
+                        disp_seconds = (disp_seconds == 0) ? 0 : (disp_seconds - 1);
+                        disp_minutes = 5 * hours;
+                        disp_minutes = (disp_minutes == 0) ? 0 : (disp_minutes - 1);
+                        disp_hours = rtc_hours;
+                    }
+
+                    if (selectedRow == SECONDS_ROW)
+                    {
+                        i = i + 1;
+                        if (i >= 3)
+                        {
+                            i = 0;
+                        }
+                    }
+                    */
+                }
+    	    }
+
+    	    if (blink == 1)
+    	    {
+    	        switch (selectedRow)
+    	        {
+    	        case SECONDS_ROW:
+    	            LED_SetCurrentLED(disp_seconds, selectedRow);
+    	            break;
 
     	        case MINUTES_ROW:
-    	            if (blink == 1)
-    	            {
-                        switch (disp_minutes)
-                        {
-                            case 0:
-                                zero_minutes();
-                                break;
-                            case 1:
-                                one_minutes();
-                                break;
-
-                            case 2:
-                                two_minutes();
-                                break;
-
-                            case 3:
-                                three_minutes();
-                                break;
-
-                            case 4:
-                                four_minutes();
-                                break;
-
-                            case 5:
-                                five_minutes();
-                                break;
-
-                            case 6:
-                                six_minutes();
-                                break;
-
-                            case 7:
-                                seven_minutes();
-                                break;
-
-                            case 8:
-                                eight_minutes();
-                                break;
-
-                            case 9:
-                                nine_minutes();
-                                break;
-
-                            case 10:
-                                ten_minutes();
-                                break;
-
-                            case 11:
-                                eleven_minutes();
-                                break;
-
-                            case 12:
-                                twelve_minutes();
-                                break;
-
-                            case 13:
-                                thirteen_minutes();
-                                break;
-
-                            case 14:
-                                fourteen_minutes();
-                                break;
-
-                            case 15:
-                                fifteen_minutes();
-                                break;
-
-                            case 16:
-                                sixteen_minutes();
-                                break;
-
-                            case 17:
-                                seventeen_minutes();
-                                break;
-
-                            case 18:
-                                eighteen_minutes();
-                                break;
-
-                            case 19:
-                                nineteen_minutes();
-                                break;
-
-                            case 20:
-                                twenty_minutes();
-                                break;
-
-                            case 21:
-                                twentyone_minutes();
-                                break;
-
-                            case 22:
-                                twentytwo_minutes();
-                                break;
-
-                            case 23:
-                                twentythree_minutes();
-                                break;
-
-                            case 24:
-                                twentyfour_minutes();
-                                break;
-
-                            case 25:
-                                twentyfive_minutes();
-                                break;
-
-                            case 26:
-                                twentysix_minutes();
-                                break;
-
-                            case 27:
-                                twentyseven_minutes();
-                                break;
-
-                            case 28:
-                                twentyeight_minutes();
-                                break;
-
-                            case 29:
-                                twentynine_minutes();
-                                break;
-
-                            case 30:
-                                thirty_minutes();
-                                break;
-
-                            case 31:
-
-                                thirtyone_minutes();
-                                break;
-
-                            case 32:
-                                thirtytwo_minutes();
-                                break;
-
-                            case 33:
-                                thirtythree_minutes();
-                                break;
-
-                            case 34:
-                                thirtyfour_minutes();
-                                break;
-
-                            case 35:
-                                thirtyfive_minutes();
-                                break;
-
-                            case 36:
-                                thirtysix_minutes();
-                                break;
-
-                            case 37:
-                                thirtyseven_minutes();
-                                break;
-
-                            case 38:
-                                thirtyeight_minutes();
-                                break;
-
-                            case 39:
-                                thirtynine_minutes();
-                                break;
-
-                            case 40:
-                                forty_minutes();
-                                break;
-
-                            case 41:
-                                fortyone_minutes();
-                                break;
-
-                            case 42:
-                                fortytwo_minutes();
-                                break;
-
-                            case 43:
-                                fortythree_minutes();
-                                break;
-
-                            case 44:
-                                fortyfour_minutes();
-                                break;
-
-                            case 45:
-                                fortyfive_minutes();
-                                break;
-
-                            case 46:
-                                fortysix_minutes();
-                                break;
-
-                            case 47:
-                                fortyseven_minutes();
-                                break;
-
-                            case 48:
-                                fortyeight_minutes();
-                                break;
-
-                            case 49:
-                                fortynine_minutes();
-                                break;
-
-                            case 50:
-                                fifty_minutes();
-                                break;
-
-                            case 51:
-                                fiftyone_minutes();
-                                break;
-
-                            case 52:
-                                fiftytwo_minutes();
-                                break;
-
-                            case 53:
-                                fiftythree_minutes();
-                                break;
-
-                            case 54:
-                                fiftyfour_minutes();
-                                break;
-
-                            case 55:
-                                fiftyfive_minutes();
-                                break;
-
-                            case 56:
-                                fiftysix_minutes();
-                                break;
-
-                            case 57:
-                                fiftyseven_minutes();
-                                break;
-
-                            case 58:
-                                fiftyeight_minutes();
-                                break;
-
-                            case 59:
-                                fiftynine_minutes();
-                                break;
-                        }
-    	            }
+    	            LED_SetCurrentLED(disp_minutes, selectedRow);
     	            break;
+
     	        case HOURS_ROW:
-    	            if (blink == 1)
-    	            {
-                        switch (disp_hours)
-                        {
-                            case 0:
-                                zero_hours();
-                                break;
-
-                            case 1:
-                                one_hours();
-                                break;
-
-                            case 2:
-                                two_hours();
-                                break;
-
-                            case 3:
-                                three_hours();
-                                break;
-
-                            case 4:
-                                four_hours();
-                                break;
-
-                            case 5:
-                                five_hours();
-                                break;
-
-                            case 6:
-                                six_hours();
-                                break;
-
-                            case 7:
-                                seven_hours();
-                                break;
-
-                            case 8:
-                                eight_hours();
-                                break;
-
-                            case 9:
-                                nine_hours();
-                                break;
-
-                            case 10:
-                                ten_hours();
-                                break;
-
-                            case 11:
-                                eleven_hours();
-                                break;
-
-                            case 12:
-                                zero_hours();
-                                break;
-
-                            case 13:
-                                one_hours();
-                                break;
-
-                            case 14:
-                                two_hours();
-                                break;
-
-                            case 15:
-                                three_hours();
-                                break;
-
-                            case 16:
-                                four_hours();
-                                break;
-
-                            case 17:
-                                five_hours();
-                                break;
-
-                            case 18:
-                                six_hours();
-                                break;
-
-                            case 19:
-                                seven_hours();
-                                break;
-
-                            case 20:
-                                eight_hours();
-                                break;
-
-                            case 21:
-                                nine_hours();
-                                break;
-
-                            case 22:
-                                ten_hours();
-                                break;
-
-                            case 23:
-                                eleven_hours();
-                                break;
-                        }
-    	            }
+                    LED_SetCurrentLED(disp_hours, selectedRow);
     	            break;
+    	        }
+    	        default:
 
+    	            break;
     	    }
-            if (index == 60)
-            {
-                index = 0;
-            }
+
             //__bis_SR_register(LPM3_bits+GIE);
 
     		break;
 
-    	/*
-    	case SetTime:
-    		switch(HMS_selection)
-    		{
-    		case HOURS:
-    			// Blink current hour
-    			if (blink == 1)
-    			{
-    			    switch (set_hours)
-    			    {
-                    case 0:
-                        zero_hours();
-                        break;
-
-                    case 1:
-                        one_hours();
-                        break;
-
-                    case 2:
-                        two_hours();
-                        break;
-
-                    case 3:
-                        three_hours();
-                        break;
-
-                    case 4:
-                        four_hours();
-                        break;
-
-                    case 5:
-                        five_hours();
-                        break;
-
-                    case 6:
-                        six_hours();
-                        break;
-
-                    case 7:
-                        seven_hours();
-                        break;
-
-                    case 8:
-                        eight_hours();
-                        break;
-
-                    case 9:
-                        nine_hours();
-                        break;
-
-                    case 10:
-                        ten_hours();
-                        break;
-
-                    case 11:
-                        eleven_hours();
-                        break;
-
-                    case 12:
-                        zero_hours();
-                        break;
-
-                    case 13:
-                        one_hours();
-                        break;
-
-                    case 14:
-                        two_hours();
-                        break;
-
-                    case 15:
-                        three_hours();
-                        break;
-
-                    case 16:
-                        four_hours();
-                        break;
-
-                    case 17:
-                        five_hours();
-                        break;
-
-                    case 18:
-                        six_hours();
-                        break;
-
-                    case 19:
-                        seven_hours();
-                        break;
-
-                    case 20:
-                        eight_hours();
-                        break;
-
-                    case 21:
-                        nine_hours();
-                        break;
-
-                    case 22:
-                        ten_hours();
-                        break;
-
-                    case 23:
-                        eleven_hours();
-                        break;
-    			    }
-    			}
-    			else
-    			{
-    			    reset_leds();
-    			}
-
-    			break;
-    		case MINUTES:
-    			// Blink current minute
-                if (blink == 1)
-                {
-                    switch (set_minutes)
-                    {
-                        case 0:
-                            zero_minutes();
-                            break;
-                        case 1:
-                            one_minutes();
-                            break;
-
-                        case 2:
-                            two_minutes();
-                            break;
-
-                        case 3:
-                            three_minutes();
-                            break;
-
-                        case 4:
-                            four_minutes();
-                            break;
-
-                        case 5:
-                            five_minutes();
-                            break;
-
-                        case 6:
-                            six_minutes();
-                            break;
-
-                        case 7:
-                            seven_minutes();
-                            break;
-
-                        case 8:
-                            eight_minutes();
-                            break;
-
-                        case 9:
-                            nine_minutes();
-                            break;
-
-                        case 10:
-                            ten_minutes();
-                            break;
-
-                        case 11:
-                            eleven_minutes();
-                            break;
-
-                        case 12:
-                            twelve_minutes();
-                            break;
-
-                        case 13:
-                            thirteen_minutes();
-                            break;
-
-                        case 14:
-                            fourteen_minutes();
-                            break;
-
-                        case 15:
-                            fifteen_minutes();
-                            break;
-
-                        case 16:
-                            sixteen_minutes();
-                            break;
-
-                        case 17:
-                            seventeen_minutes();
-                            break;
-
-                        case 18:
-                            eighteen_minutes();
-                            break;
-
-                        case 19:
-                            nineteen_minutes();
-                            break;
-
-                        case 20:
-                            twenty_minutes();
-                            break;
-
-                        case 21:
-                            twentyone_minutes();
-                            break;
-
-                        case 22:
-                            twentytwo_minutes();
-                            break;
-
-                        case 23:
-                            twentythree_minutes();
-                            break;
-
-                        case 24:
-                            twentyfour_minutes();
-                            break;
-
-                        case 25:
-                            twentyfive_minutes();
-                            break;
-
-                        case 26:
-                            twentysix_minutes();
-                            break;
-
-                        case 27:
-                            twentyseven_minutes();
-                            break;
-
-                        case 28:
-                            twentyeight_minutes();
-                            break;
-
-                        case 29:
-                            twentynine_minutes();
-                            break;
-
-                        case 30:
-                            thirty_minutes();
-                            break;
-
-                        case 31:
-
-                            thirtyone_minutes();
-                            break;
-
-                        case 32:
-                            thirtytwo_minutes();
-                            break;
-
-                        case 33:
-                            thirtythree_minutes();
-                            break;
-
-                        case 34:
-                            thirtyfour_minutes();
-                            break;
-
-                        case 35:
-                            thirtyfive_minutes();
-                            break;
-
-                        case 36:
-                            thirtysix_minutes();
-                            break;
-
-                        case 37:
-                            thirtyseven_minutes();
-                            break;
-
-                        case 38:
-                            thirtyeight_minutes();
-                            break;
-
-                        case 39:
-                            thirtynine_minutes();
-                            break;
-
-                        case 40:
-                            forty_minutes();
-                            break;
-
-                        case 41:
-                            fortyone_minutes();
-                            break;
-
-                        case 42:
-                            fortytwo_minutes();
-                            break;
-
-                        case 43:
-                            fortythree_minutes();
-                            break;
-
-                        case 44:
-                            fortyfour_minutes();
-                            break;
-
-                        case 45:
-                            fortyfive_minutes();
-                            break;
-
-                        case 46:
-                            fortysix_minutes();
-                            break;
-
-                        case 47:
-                            fortyseven_minutes();
-                            break;
-
-                        case 48:
-                            fortyeight_minutes();
-                            break;
-
-                        case 49:
-                            fortynine_minutes();
-                            break;
-
-                        case 50:
-                            fifty_minutes();
-                            break;
-
-                        case 51:
-                            fiftyone_minutes();
-                            break;
-
-                        case 52:
-                            fiftytwo_minutes();
-                            break;
-
-                        case 53:
-                            fiftythree_minutes();
-                            break;
-
-                        case 54:
-                            fiftyfour_minutes();
-                            break;
-
-                        case 55:
-                            fiftyfive_minutes();
-                            break;
-
-                        case 56:
-                            fiftysix_minutes();
-                            break;
-
-                        case 57:
-                            fiftyseven_minutes();
-                            break;
-
-                        case 58:
-                            fiftyeight_minutes();
-                            break;
-
-                        case 59:
-                            fiftynine_minutes();
-                            break;
-                    }
-                }
-                else
-                {
-                    reset_leds();
-                }
-
-    			break;
-    		case SECONDS:
-    			// Blink current second
-                if (blink == 1)
-                {
-                    switch (set_seconds)
-                    {
-                        case 0:
-                            zero_seconds();
-                            break;
-                        case 1:
-                            one_seconds();
-                            break;
-
-                        case 2:
-                            two_seconds();
-                            break;
-
-                        case 3:
-                            three_seconds();
-                            break;
-
-                        case 4:
-                            four_seconds();
-                            break;
-
-                        case 5:
-                            five_seconds();
-                            break;
-
-                        case 6:
-                            six_seconds();
-                            break;
-
-                        case 7:
-                            seven_seconds();
-                            break;
-
-                        case 8:
-                            eight_seconds();
-                            break;
-
-                        case 9:
-                            nine_seconds();
-                            break;
-
-                        case 10:
-                            ten_seconds();
-                            break;
-
-                        case 11:
-                            eleven_seconds();
-                            break;
-
-                        case 12:
-                            twelve_seconds();
-                            break;
-
-                        case 13:
-                            thirteen_seconds();
-                            break;
-
-                        case 14:
-                            fourteen_seconds();
-                            break;
-
-                        case 15:
-                            fifteen_seconds();
-                            break;
-
-                        case 16:
-                            sixteen_seconds();
-                            break;
-
-                        case 17:
-                            seventeen_seconds();
-                            break;
-
-                        case 18:
-                            eighteen_seconds();
-                            break;
-
-                        case 19:
-                            nineteen_seconds();
-                            break;
-
-                        case 20:
-                            twenty_seconds();
-                            break;
-
-                        case 21:
-                            twentyone_seconds();
-                            break;
-
-                        case 22:
-                            twentytwo_seconds();
-                            break;
-
-                        case 23:
-                            twentythree_seconds();
-                            break;
-
-                        case 24:
-                            twentyfour_seconds();
-                            break;
-
-                        case 25:
-                            twentyfive_seconds();
-                            break;
-
-                        case 26:
-                            twentysix_seconds();
-                            break;
-
-                        case 27:
-                            twentyseven_seconds();
-                            break;
-
-                        case 28:
-                            twentyeight_seconds();
-                            break;
-
-                        case 29:
-                            twentynine_seconds();
-                            break;
-
-                        case 30:
-                            thirty_seconds();
-                            break;
-
-                        case 31:
-
-                            thirtyone_seconds();
-                            break;
-
-                        case 32:
-                            thirtytwo_seconds();
-                            break;
-
-                        case 33:
-                            thirtythree_seconds();
-                            break;
-
-                        case 34:
-                            thirtyfour_seconds();
-                            break;
-
-                        case 35:
-                            thirtyfive_seconds();
-                            break;
-
-                        case 36:
-                            thirtysix_seconds();
-                            break;
-
-                        case 37:
-                            thirtyseven_seconds();
-                            break;
-
-                        case 38:
-                            thirtyeight_seconds();
-                            break;
-
-                        case 39:
-                            thirtynine_seconds();
-                            break;
-
-                        case 40:
-                            forty_seconds();
-                            break;
-
-                        case 41:
-                            fortyone_seconds();
-                            break;
-
-                        case 42:
-                            fortytwo_seconds();
-                            break;
-
-                        case 43:
-                            fortythree_seconds();
-                            break;
-
-                        case 44:
-                            fortyfour_seconds();
-                            break;
-
-                        case 45:
-                            fortyfive_seconds();
-                            break;
-
-                        case 46:
-                            fortysix_seconds();
-                            break;
-
-                        case 47:
-                            fortyseven_seconds();
-                            break;
-
-                        case 48:
-                            fortyeight_seconds();
-                            break;
-
-                        case 49:
-                            fortynine_seconds();
-                            break;
-
-                        case 50:
-                            fifty_seconds();
-                            break;
-
-                        case 51:
-                            fiftyone_seconds();
-                            break;
-
-                        case 52:
-                            fiftytwo_seconds();
-                            break;
-
-                        case 53:
-                            fiftythree_seconds();
-                            break;
-
-                        case 54:
-                            fiftyfour_seconds();
-                            break;
-
-                        case 55:
-                            fiftyfive_seconds();
-                            break;
-
-                        case 56:
-                            fiftysix_seconds();
-                            break;
-
-                        case 57:
-                            fiftyseven_seconds();
-                            break;
-
-                        case 58:
-                            fiftyeight_seconds();
-                            break;
-
-                        case 59:
-                            fiftynine_seconds();
-                            break;
-                    }
-                }
-                else
-                {
-                    reset_leds();
-                }
-    			break;
-    		}
-    		break;
-    	 */
     	case Sleep:
     	    /*
     		ctpl_enterLpm35(CTPL_DISABLE_RESTORE_ON_RESET);
@@ -1298,12 +146,99 @@ void main(void)
     		*/
     		break;
     	}
+
+    	/*
+    	// Determine next state
+    	if (button_shift_reg_1 == 0xFF)
+        {
+            if ((nextState == SetTime && lastButton1State == 0) || (nextState == SetTime && button1_hold_seconds >= 2))
+            {
+                if (selectedRow >= 2)
+                {
+                    // Change RTC values
+                    set_new_time = 1;
+                    //nextState = ShowTime;
+                    //blink = 1;
+                }
+                else
+                {
+                    selectedRow = (selectedRow_t)((int)selectedRow + 1);
+                }
+
+                button1_hold_seconds = 0;
+
+            }
+            else if (nextState != SetTime && button1_hold_seconds >= 3)
+            {
+                nextState = SetTime;
+                selectedRow = (selectedRow_t)0;
+                button1_hold_seconds = 0;
+            }
+            lastButton1State = 1;
+        }
+    	else if (button_shift_reg_1 == 0x00)
+    	{
+    	    lastButton1State = 0;
+    	}
+
+        if (button_shift_reg_2 == 0xFF)
+        {
+            if ((nextState == SetTime && lastButton2State == 0) || (nextState == SetTime && button2_hold_seconds >= 1))
+            {
+                switch (selectedRow)
+                {
+                    case HOURS_ROW:
+                    {
+                        if (disp_hours == 11)
+                        {
+                            disp_hours = 0;
+                        }
+                        else
+                        {
+                            disp_hours++;
+                        }
+                        break;
+                    }
+                    case MINUTES_ROW:
+                    {
+                        if (disp_minutes == 59)
+                        {
+                            disp_minutes = 0;
+                        }
+                        else
+                        {
+                            disp_minutes++;
+                        }
+                        break;
+                    }
+                    case SECONDS_ROW:
+                    {
+                        if (disp_seconds == 59)
+                        {
+                            disp_seconds = 0;
+                        }
+                        else
+                        {
+                            disp_seconds ++;
+                        }
+                        break;
+                    }
+                }
+                blink = 1;
+                button2_hold_seconds = 0;
+            }
+            lastButton2State = 1;
+        }
+        else if (button_shift_reg_2 == 0x00)
+        {
+            lastButton2State = 0;
+        }
+        */
     }
 }
 
 void initialize()
 {
-
 	//GPIO Setup
 	//
 	// Data register setup for PxDIR, PxOUT
@@ -1363,17 +298,24 @@ void initialize()
 	RTCCTL01 &= ~RTCHOLD;           //Release RTC hold
 
 
-	// Timer setup (used for button qualification)
+	// Timer for button debouncing
+	TB1CCTL0 = CCIE;
+    TB1CCR0 = 125;    // 2 milliseconds
+	TB1CTL = TBSSEL_2 + MC_1 + ID_2 + TBCLR;
+
+
+	// Timer used for long press
+	/*
 	TB0CCTL0 = CCIE;
-    TB0CCR0 = 31250;    // 0.5 seconds
-	TB0CTL = TASSEL_2 + MC_1 + ID_0; // Timer = ACLK, count up
+	TB0CCR0 = 24576;    // 3 seconds
 
-
+	TB0CTL = TBSSEL_1 + MC_1 + ID_2 + TBCLR;    // (250 kHz / 8 = 8192)
+    */
 	// Timer for sleeping between LED updating
 	// @TODO Consider running this timer off SMCLK. That way, it is disabled when in sleep mode 3.0
     TA1CCTL0 = CCIE;
-    TA1CCR0 = 126;                    // TASSEL_2 / ID (250 kHz / 4 == 62500) / 62500 = 1 Hz
-                                        // Used for blinking LEDs
+    TA1CCR0 = 63;                    // TASSEL_2 / ID (250 kHz / 4 == 62500) / 62500 = 1 Hz
+    //TA1CCR0 = 1000;                                  // Used for blinking LEDs
 
     TA1CCR1 = 62500;                       // TASSEL_2 / ID (250 kHz / 4 == 62500) / 63 = ~ 1 kHz
                                         // This timer is used for updating LEDs
@@ -1397,9 +339,9 @@ __interrupt void rtc_isr(void)
             if (set_new_time == 1)
             {
                 // Change RTC time to requested new time
-                RTCSEC = (int)set_seconds;
-                RTCMIN = (int)set_minutes;
-                RTCHOUR = (int)set_hours;
+                RTCSEC = disp_seconds;
+                RTCMIN = disp_minutes;
+                RTCHOUR = disp_hours;
                 set_new_time = 0;
                 blink = 1;
                 nextState = ShowTime;
@@ -1408,37 +350,29 @@ __interrupt void rtc_isr(void)
             rtc_seconds = RTCSEC;
             rtc_minutes = RTCMIN;
             rtc_hours = RTCHOUR;
-            rtc_ready = 1;
 
             break;
         }
+        default:
+            rtc_seconds = 29;
+            rtc_minutes = 29;
+            rtc_hours = 8;
     }
 }
 
+#pragma vector = TIMER1_B0_VECTOR
+__interrupt void Timer1_B0_ISR(void)
+{
+    // Shift value of each button
+    button_shift_reg_1 = (button_shift_reg_1 << 1) | ((P1IN & BIT6) >> 6);
+    button_shift_reg_2 = (button_shift_reg_2 << 1) | ((P2IN & BIT2) >> 2);
+}
+
+/*
 #pragma vector = TIMER0_B0_VECTOR
 __interrupt void Timer0_B0_ISR(void)
 {
-    // Shift value of each button
-
-    button_shift_reg_1 = (button_shift_reg_1 << 1) + ((P1IN & BIT6) >> 6);
-    button_shift_reg_2 = (button_shift_reg_2 << 1) + ((P2IN & BIT2) >> 2);
-
-    if (button_shift_reg_1 & 0x01)
-    {
-        if (nextState == SetTime)
-        {
-            if (selectedRow == 2)
-            {
-                // Change RTC values
-                set_new_time = 1;
-            }
-            else
-            {
-                selectedRow = selectedRow + 1;
-            }
-        }
-    }
-    if (button_shift_reg_1 == 0x3F) // The button has been held for 3 seconds
+    if (button_shift_reg_1 == 0xFF) // The button has been held for 3 seconds
     {
         // Mode should be SetTime now
         if (nextState != SetTime)
@@ -1447,59 +381,9 @@ __interrupt void Timer0_B0_ISR(void)
             selectedRow = HOURS_ROW;
         }
     }
-
-    if (button_shift_reg_2 & 0x01) // The button has been held for 3 seconds
-    {
-        if (nextState == SetTime)
-        {
-            switch (selectedRow)
-            {
-                case HOURS_ROW:
-                {
-                    if (set_hours == 11)
-                    {
-                        set_hours = 0;
-                        disp_hours = 0;
-                    }
-                    else
-                    {
-                        set_hours ++;
-                        disp_hours = set_hours;
-                    }
-                    break;
-                }
-                case MINUTES_ROW:
-                {
-                    if (set_minutes == 59)
-                    {
-                        set_minutes = 0;
-                        disp_minutes = 0;
-                    }
-                    else
-                    {
-                        set_minutes ++;
-                        disp_minutes = set_minutes;
-                    }
-                    break;
-                }
-                case SECONDS_ROW:
-                {
-                    if (set_seconds == 59)
-                    {
-                        set_seconds = 0;
-                        disp_seconds = 0;
-                    }
-                    else
-                    {
-                        set_seconds ++;
-                        disp_seconds = set_seconds;
-                    }
-                    break;
-                }
-            }
-        }
-    }
+    TB0CTL = TBSSEL_0 + MC_1 + ID_2;    // (32.768 kHz / 4 = 8192)
 }
+*/
 
 #pragma vector = TIMER1_A0_VECTOR
 __interrupt void Timer1_A0_ISR(void)
@@ -1513,54 +397,10 @@ __interrupt void Timer1_A0_ISR(void)
 
     if (nextState != SetTime)
     {
-        selectedRow = selectedRow + 1;
-        if (selectedRow == NO_ROW)
+        selectedRow = (selectedRow_t)((int)selectedRow + 1);
+        if (selectedRow >= NO_ROW)
         {
             selectedRow = HOURS_ROW;
-        }
-
-        if (displayMode == DISPLAY_MODE_0)
-        {
-            disp_seconds = rtc_seconds;
-            disp_minutes = rtc_minutes;
-            disp_hours = rtc_hours;
-        }
-
-        else if (displayMode == DISPLAY_MODE_1)
-        {
-            static char i = 0;
-
-            if (i == 0)
-            {
-                disp_seconds = rtc_seconds;
-            }
-            if (i == 1)
-            {
-                disp_seconds = rtc_minutes;
-                disp_minutes = rtc_minutes;
-            }
-            if (i == 2)
-            {
-                char hours = rtc_hours;
-                if (hours >= 12)
-                {
-                    hours = hours - 12;
-                }
-                disp_seconds = 5 * hours;
-                disp_seconds = (disp_seconds == 0) ? 0 : (disp_seconds - 1);
-                disp_minutes = 5 * hours;
-                disp_minutes = (disp_minutes == 0) ? 0 : (disp_minutes - 1);
-                disp_hours = rtc_hours;
-            }
-
-            if (selectedRow == HOURS_ROW)
-            {
-                i = i + 1;
-                if (i >= 3)
-                {
-                    i = 0;
-                }
-            }
         }
     }
 
@@ -1582,65 +422,27 @@ __interrupt void Timer1_A1_ISR(void)
         {
             blink ^= 1;
         }
+
+        if (button_shift_reg_1 == 0xFF) // The button has been held for 3 seconds
+        {
+            button1_hold_seconds ++;
+        }
+        else
+        {
+            button1_hold_seconds = 0;
+        }
+
+        if (button_shift_reg_2 == 0xFF)
+        {
+            button2_hold_seconds ++;
+        }
+        else
+        {
+            button2_hold_seconds = 0;
+        }
+
         break;
     }
-
-
-
-    /*
-    int interruptSource = TA1IV;
-
-    selectedRow = selectedRow + 1;
-    if (selectedRow == NO_ROW)
-    {
-        selectedRow = SECONDS_ROW;
-    }
-
-    if (displayMode == DISPLAY_MODE_0)
-    {
-        disp_seconds = rtc_seconds;
-        disp_minutes = rtc_minutes;
-        disp_hours = rtc_hours;
-    }
-
-    else if (displayMode == DISPLAY_MODE_1)
-    {
-        static char i = 0;
-
-        if (i == 0)
-        {
-            disp_seconds = rtc_seconds;
-        }
-        if (i == 1)
-        {
-            disp_seconds = rtc_minutes;
-            disp_minutes = rtc_minutes;
-        }
-        if (i == 2)
-        {
-            char hours = rtc_hours;
-            if (hours >= 12)
-            {
-                hours = hours - 12;
-            }
-            disp_seconds = 5 * hours;
-            disp_seconds = (disp_seconds == 0) ? 0 : (disp_seconds - 1);
-            disp_minutes = 5 * hours;
-            disp_minutes = (disp_minutes == 0) ? 0 : (disp_minutes - 1);
-            disp_hours = rtc_hours;
-        }
-
-        if (selectedRow == HOURS_ROW)
-        {
-            i = i + 1;
-            if (i >= 3)
-            {
-                i = 0;
-            }
-        }
-    }
-    */
-
 }
 
 
@@ -1648,48 +450,6 @@ __interrupt void Timer1_A1_ISR(void)
 #pragma vector=PORT1_VECTOR
 __interrupt void Port_1(void)
 {
-    /*
-	switch(nextState)
-	{
-	case Sleep:
-	{
-		nextState = ShowTime;
-		break;
-	}
-	case ShowTime:
-	{
-		nextState = SetTime;
-		break;
-	}
-	case SetTime:
-	{
-		switch(HMS_selection)
-		{
-		case HOURS:
-		{
-			HMS_selection = MINUTES;
-			break;
-		}
-		case MINUTES:
-		{
-			HMS_selection = SECONDS;
-			break;
-		}
-		case SECONDS:
-			// Exit out of SetTime, go into ShowTime
-			nextState = ShowTime;
-			// Reset HMS for next entry
-			HMS_selection = HOURS;
-			break;
-		}
-		break;
-	}
-	}
-	P2IFG &= ~BIT6;
-	P2IE = 0; 			// Disable interrupt from P2 and P3 and wait for standby clock to elapse before enabling again
-	P3IE = 0;
-	TA0CTL |= MC_1; 	// Enable debounce timer
-	*/
 
     int interruptSource = P1IV;
     //displayMode = DISPLAY_MODE_1;
@@ -1702,70 +462,7 @@ __interrupt void Port_1(void)
 #pragma vector=PORT2_VECTOR
 __interrupt void Port_2(void)
 {
-    /*
-	switch(nextState)
-	{
-	case Sleep:
-	{
-		nextState = ShowTime;
-		break;
-	}
-	case ShowTime:
-	{
-		nextState = SetTime;
-		break;
-	}
-	case SetTime:
-	{
-		switch(HMS_selection)
-		{
-		case HOURS:
-		{
-			// Wait until RTC can be modified safely
-			while(!RTCRDY);
-			// Increment hour
-			if(RTCHOUR < 23)
-			{
-				RTCHOUR = RTCHOUR + 1;
-			}
-			else
-			{
-				RTCHOUR = 0;
-			}
-			break;
-		}
 
-		case MINUTES:
-		{
-			// Wait until RTC can be modified safely
-			while(!RTCRDY);
-			// Increment minute
-			if(RTCMIN < 59)
-			{
-				RTCMIN = RTCMIN + 1;
-			}
-			else
-			{
-				RTCMIN = 0;
-			}
-			break;
-		}
-		case SECONDS:
-		{
-			// Wait until RTC can be modified safely
-			while(!RTCRDY);
-			// Reset seconds
-			RTCSEC = 0;
-			break;
-		}
-	}
-	}
-	P3IFG &= ~BIT6;
-	P2IE = 0;	// Disable interrupt from P2 and P3 and wait for standby clock to elapse before enabling again
-	P3IE = 0;
-	TA0CTL |= MC_1;		// Enable debounce timer
-
-    }*/
     int interruptSource = P2IV;
 
 
