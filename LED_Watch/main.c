@@ -56,98 +56,119 @@ void main(void)
 
     while(1)
     {
-    	switch(nextState)
-    	{
+        // Handle how the LEDs are displayed
 
-    	case SetTime:
-    	case ShowTime:
+        if (nextState != SetTime)
+        {
+            if (displayMode == DISPLAY_MODE_0)
+            {
+                __disable_interrupt();
+                disp_seconds = rtc_seconds;
+                disp_minutes = rtc_minutes;
+                disp_hours = rtc_hours;
 
-    	    // Handle how the LEDs are displayed
-    	    if (nextState != SetTime)
-    	    {
-                if (displayMode == DISPLAY_MODE_0)
+                switch (selectedRow)
+                {
+                case SECONDS_ROW:
+                    LED_SetCurrentLED(disp_seconds, selectedRow);
+                    break;
+
+                case MINUTES_ROW:
+                    LED_SetCurrentLED(disp_minutes, selectedRow);
+                    break;
+
+                case HOURS_ROW:
+                    LED_SetCurrentLED(disp_hours, selectedRow);
+                    break;
+                default:
+                    break;
+                }
+
+                __enable_interrupt();
+
+                /*
+                int i = 0;
+                for (i = 0; i < 10; i++);;
+                rtc_seconds++;
+                */
+
+            }
+
+            else if (displayMode == DISPLAY_MODE_1)
+            {
+
+                /*
+                static char i = 0;
+
+                if (i == 0)
                 {
                     disp_seconds = rtc_seconds;
+                }
+                if (i == 1)
+                {
+                    disp_seconds = rtc_minutes;
                     disp_minutes = rtc_minutes;
+                }
+                if (i == 2)
+                {
+                    char hours = rtc_hours;
+                    if (hours >= 12)
+                    {
+                        hours = hours - 12;
+                    }
+                    disp_seconds = 5 * hours;
+                    disp_seconds = (disp_seconds == 0) ? 0 : (disp_seconds - 1);
+                    disp_minutes = 5 * hours;
+                    disp_minutes = (disp_minutes == 0) ? 0 : (disp_minutes - 1);
                     disp_hours = rtc_hours;
                 }
 
-                else if (displayMode == DISPLAY_MODE_1)
+                if (selectedRow == SECONDS_ROW)
                 {
-
-                    /*
-                    static char i = 0;
-
-                    if (i == 0)
+                    i = i + 1;
+                    if (i >= 3)
                     {
-                        disp_seconds = rtc_seconds;
+                        i = 0;
                     }
-                    if (i == 1)
-                    {
-                        disp_seconds = rtc_minutes;
-                        disp_minutes = rtc_minutes;
-                    }
-                    if (i == 2)
-                    {
-                        char hours = rtc_hours;
-                        if (hours >= 12)
-                        {
-                            hours = hours - 12;
-                        }
-                        disp_seconds = 5 * hours;
-                        disp_seconds = (disp_seconds == 0) ? 0 : (disp_seconds - 1);
-                        disp_minutes = 5 * hours;
-                        disp_minutes = (disp_minutes == 0) ? 0 : (disp_minutes - 1);
-                        disp_hours = rtc_hours;
-                    }
-
-                    if (selectedRow == SECONDS_ROW)
-                    {
-                        i = i + 1;
-                        if (i >= 3)
-                        {
-                            i = 0;
-                        }
-                    }
-                    */
                 }
-    	    }
+                */
+            }
+        }
 
-    	    if (blink == 1)
-    	    {
-    	        switch (selectedRow)
-    	        {
-    	        case SECONDS_ROW:
-    	            LED_SetCurrentLED(disp_seconds, selectedRow);
-    	            break;
 
-    	        case MINUTES_ROW:
-    	            LED_SetCurrentLED(disp_minutes, selectedRow);
-    	            break;
+        else if (nextState == SetTime)
+        {
+            __disable_interrupt();
 
-    	        case HOURS_ROW:
+            if (blink == 1)
+            {
+                switch (selectedRow)
+                {
+                case SECONDS_ROW:
+                    LED_SetCurrentLED(disp_seconds, selectedRow);
+                    break;
+
+                case MINUTES_ROW:
+                    LED_SetCurrentLED(disp_minutes, selectedRow);
+                    break;
+
+                case HOURS_ROW:
                     LED_SetCurrentLED(disp_hours, selectedRow);
-    	            break;
-    	        }
-    	        default:
+                    break;
+                default:
+                    break;
+                }
+            }
+            else
+            {
+                reset_leds();
+            }
+            __enable_interrupt();
+        }
 
-    	            break;
-    	    }
 
-            //__bis_SR_register(LPM3_bits+GIE);
 
-    		break;
 
-    	case Sleep:
-    	    /*
-    		ctpl_enterLpm35(CTPL_DISABLE_RESTORE_ON_RESET);
-    		// On wakeup from 3.5, all registers have been cleared so reinitialize
-    		initialize();
-    		*/
-    		break;
-    	}
-
-    	/*
     	// Determine next state
     	if (button_shift_reg_1 == 0xFF)
         {
@@ -233,7 +254,7 @@ void main(void)
         {
             lastButton2State = 0;
         }
-        */
+
     }
 }
 
@@ -314,7 +335,7 @@ void initialize()
 	// Timer for sleeping between LED updating
 	// @TODO Consider running this timer off SMCLK. That way, it is disabled when in sleep mode 3.0
     TA1CCTL0 = CCIE;
-    TA1CCR0 = 63;                    // TASSEL_2 / ID (250 kHz / 4 == 62500) / 62500 = 1 Hz
+    TA1CCR0 = 126;                    // TASSEL_2 / ID (250 kHz / 4 == 62500) / 62500 = 1 Hz
     //TA1CCR0 = 1000;                                  // Used for blinking LEDs
 
     TA1CCR1 = 62500;                       // TASSEL_2 / ID (250 kHz / 4 == 62500) / 63 = ~ 1 kHz
@@ -346,6 +367,8 @@ __interrupt void rtc_isr(void)
                 blink = 1;
                 nextState = ShowTime;
             }
+
+
 
             rtc_seconds = RTCSEC;
             rtc_minutes = RTCMIN;
@@ -404,7 +427,7 @@ __interrupt void Timer1_A0_ISR(void)
         }
     }
 
-    TA1CCR0 += 63;
+    TA1CCR0 += 126;
 }
 
 #pragma vector = TIMER1_A1_VECTOR

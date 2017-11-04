@@ -17,6 +17,8 @@ typedef struct {
     char PJ;
 } ledCommand_t;
 
+static char test = 0;
+
 static const ledCommand_t led_seconds[60] = {{ (char)P1_OFF,            (char)(P2_OFF ^ BIT3),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },    // 0 seconds
                                              { (char)P1_OFF,            (char)((P2_OFF ^ BIT3) | BIT7),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },             // 1 second
                                              { (char)P1_OFF,            (char)(P2_OFF ^ BIT3),              (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },             // 2 seconds
@@ -146,6 +148,7 @@ static const ledCommand_t led_hours[24] = {{ (char)(P1_OFF ^ BIT1),     (char)P2
                                            { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT7),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
                                            { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)(P3_OFF | BIT7),  (char)P4_OFF,           (char)PJ_OFF },
                                            { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)(P3_OFF | BIT6),  (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)(P3_OFF | BIT4),  (char)P4_OFF,           (char)PJ_OFF },
                                            { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT6),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
                                            { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)(P4_OFF | BIT0),  (char)PJ_OFF },
                                            { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
@@ -153,70 +156,66 @@ static const ledCommand_t led_hours[24] = {{ (char)(P1_OFF ^ BIT1),     (char)P2
                                            { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT0),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
                                            { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
                                            { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
                                            { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
                                            { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT7),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
                                            { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)(P3_OFF | BIT7),  (char)P4_OFF,           (char)PJ_OFF },
                                            { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)(P3_OFF | BIT6),  (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)(P3_OFF | BIT4),  (char)P4_OFF,           (char)PJ_OFF },
                                            { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT6),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
                                            { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)(P4_OFF | BIT0),  (char)PJ_OFF },
                                            { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
                                            { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT1),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
                                            { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT0),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
                                            { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT0) }
+                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT2) }
+                                           //{ (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT0) }
 };
 
 void reset_leds()
 {
-    P1OUT = P1_OFF;
-    P2OUT = P2_OFF;
-    P3OUT = P3_OFF;
-    P4OUT = P4_OFF;
-    PJOUT = PJ_OFF;
+    P1OUT = (char)P1_OFF;
+    P2OUT = (char)P2_OFF;
+    P3OUT = (char)P3_OFF;
+    P4OUT = (char)P4_OFF;
+    PJOUT = (short)PJ_OFF;
 }
 
 
-
-void LED_SetCurrentLED(unsigned char index, selectedRow_t row)
+#pragma FUNC_ALWAYS_INLINE(LED_SetCurrentLED)
+inline void LED_SetCurrentLED(unsigned char index, selectedRow_t row)
 {
     reset_leds();
     switch(row)
     {
     case HOURS_ROW:
-        if (index < 24)
-        {
+    {
             P1OUT = led_hours[index].P1;
             P2OUT = led_hours[index].P2;
             P3OUT = led_hours[index].P3;
             P4OUT = led_hours[index].P4;
-            PJOUT = (PJOUT & 0xFF) | (int) led_hours[index].PJ;
-        }
-        break;
+            PJOUT = (PJOUT & 0xFF) | (short) led_hours[index].PJ;
 
+        break;
+    }
     case MINUTES_ROW:
-        if (index < 60)
-        {
+    {
             P1OUT = led_minutes[index].P1;
             P2OUT = led_minutes[index].P2;
             P3OUT = led_minutes[index].P3;
             P4OUT = led_minutes[index].P4;
-            PJOUT = (PJOUT & 0xFF) | (int) led_minutes[index].PJ;
-        }
-        break;
+            PJOUT = (PJOUT & 0xFF00) | (short) led_minutes[index].PJ;
 
+        break;
+    }
     case SECONDS_ROW:
-        if (index < 60)
-        {
+    {
             P1OUT = led_seconds[index].P1;
             P2OUT = led_seconds[index].P2;
             P3OUT = led_seconds[index].P3;
             P4OUT = led_seconds[index].P4;
-            PJOUT = (PJOUT & 0xFF) | (int) led_seconds[index].PJ;
-        }
-        break;
-
+            PJOUT = (PJOUT & 0xFF00) | (short) led_seconds[index].PJ;
+       break;
+    }
     default:
 
         break;
