@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source "C:/Users/Sean Harrington/Documents/Electronic Projects/LED_Watch/Hardware/Layout/LED_Watch/LED_Watch.sch")
-    (date "2/3/2018 8:13:58 PM")
+    (date "2/3/2018 8:43:21 PM")
     (tool "Eeschema 4.0.6")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -106,7 +106,7 @@
       (tstamp 596728B4))
     (comp (ref L1)
       (value LED)
-      (footprint LED_Watch:LNJ247W82RA)
+      (footprint LED_Watch:LSQ976)
       (libsource (lib device) (part LED))
       (sheetpath (names /) (tstamps /))
       (tstamp 596728B8))
