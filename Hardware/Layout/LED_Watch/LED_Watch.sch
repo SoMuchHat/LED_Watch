@@ -551,13 +551,7 @@ Wire Wire Line
 Wire Wire Line
 	2000 2900 1900 2900
 Wire Wire Line
-	3650 3000 3400 3000
-Wire Wire Line
-	3650 2800 3650 3350
-Connection ~ 3650 3000
-Wire Wire Line
 	3400 2800 3650 2800
-Connection ~ 3650 2900
 Wire Wire Line
 	3900 2700 3900 2800
 Wire Wire Line
@@ -727,8 +721,6 @@ Wire Wire Line
 Wire Wire Line
 	3400 2700 4050 2700
 Wire Wire Line
-	3400 2900 3650 2900
-Wire Wire Line
 	7800 900  7800 1100
 Wire Wire Line
 	1400 2550 1400 2700
@@ -774,4 +766,28 @@ NoConn ~ 3500 1550
 Text Label 1900 2250 2    60   ~ 0
 COL2
 NoConn ~ 1900 2350
+$Comp
+L GND #PWR?
+U 1 1 5A1F421B
+P 5000 2350
+F 0 "#PWR?" H 5000 2100 50  0001 C CNN
+F 1 "GND" H 5000 2200 50  0000 C CNN
+F 2 "" H 5000 2350 50  0001 C CNN
+F 3 "" H 5000 2350 50  0001 C CNN
+	1    5000 2350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4750 2300 5000 2300
+Wire Wire Line
+	5000 2300 5000 2350
+Connection ~ 4750 2300
+Wire Wire Line
+	3650 2800 3650 3350
+Wire Wire Line
+	3400 2900 3500 2900
+Wire Wire Line
+	3500 2900 3500 3000
+Wire Wire Line
+	3500 3000 3400 3000
 $EndSCHEMATC
