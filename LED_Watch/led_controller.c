@@ -19,155 +19,155 @@ typedef struct {
 
 static char test = 0;
 
-static const ledCommand_t led_seconds[60] = {{ (char)P1_OFF,            (char)(P2_OFF ^ BIT3),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },    // 0 seconds
-                                             { (char)P1_OFF,            (char)((P2_OFF ^ BIT3) | BIT7),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },             // 1 second
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT3),              (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },             // 2 seconds
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)((P3_OFF ^ BIT3) | BIT6),     (char)P4_OFF,           (char)PJ_OFF },                   // 3 seconds
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)((P3_OFF ^ BIT3) | BIT4),     (char)P4_OFF,           (char)PJ_OFF },                   // 4 seconds
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT6),              (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)PJ_OFF },                   // 5 seconds
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT3),              (char)(P4_OFF | BIT0),  (char)PJ_OFF },                   // 6 seconds
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)(PJ_OFF | BIT1) },    // 7 seconds
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT1),              (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)PJ_OFF },                   // 8 seconds
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT0),              (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)PJ_OFF },                   // 9 seconds
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)(PJ_OFF | BIT3) },    // 10 seconds
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)(PJ_OFF | BIT2) },    // 11 seconds
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)(PJ_OFF | BIT0) },    // 12 seconds
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT7),              (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)PJ_OFF },                   // 13 seconds
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)((P3_OFF ^ BIT3) | BIT7),     (char)P4_OFF,           (char)PJ_OFF },                   // 14 seconds
-                                             { (char)(P1_OFF ^ BIT4),   (char)P2_OFF,                       (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },                   // 15 seconds
-                                             { (char)(P1_OFF ^ BIT4),   (char)P2_OFF,                       (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },              // 16 seconds
-                                             { (char)(P1_OFF ^ BIT4),   (char)(P2_OFF | BIT6),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },              // 17 seconds
-                                             { (char)(P1_OFF ^ BIT4),   (char)P2_OFF,                       (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },              // 18 seconds
-                                             { (char)(P1_OFF ^ BIT4),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },              // 19 seconds
-                                             { (char)(P1_OFF ^ BIT4),   (char)(P2_OFF | BIT1),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },              // 20 seconds
-                                             { (char)(P1_OFF ^ BIT4),   (char)(P2_OFF | BIT0),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },              // 21 seconds
-                                             { (char)(P1_OFF ^ BIT4),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },              // 22 seconds
-                                             { (char)(P1_OFF ^ BIT4),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) },              // 23 seconds
-                                             { (char)(P1_OFF ^ BIT4),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },              // 24 seconds
-                                             { (char)(P1_OFF ^ BIT4),   (char)(P2_OFF | BIT7),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },              // 25 seconds
-                                             { (char)(P1_OFF ^ BIT4),   (char)P2_OFF,                       (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },              // 26 seconds
-                                             { (char)(P1_OFF ^ BIT2),   (char)P2_OFF,                       (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },              // 27 seconds
-                                             { (char)(P1_OFF ^ BIT2),   (char)P2_OFF,                       (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },              // 28 seconds
-                                             { (char)(P1_OFF ^ BIT2),   (char)(P2_OFF | BIT6),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },              // 29 seconds
-                                             { (char)(P1_OFF ^ BIT2),   (char)P2_OFF,                       (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT2),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
-                                             { (char)(P1_OFF ^ BIT2),   (char)(P2_OFF | BIT1),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT2),   (char)(P2_OFF | BIT0),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT2),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
-                                             { (char)(P1_OFF ^ BIT2),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
-                                             { (char)(P1_OFF ^ BIT2),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
-                                             { (char)(P1_OFF ^ BIT2),   (char)(P2_OFF | BIT7),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT2),   (char)P2_OFF,                       (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)((P3_OFF ^ BIT2) | BIT6),       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)((P3_OFF ^ BIT2) | BIT4),       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT6),              (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT2),              (char)(P4_OFF | BIT0),  (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT1),              (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT0),              (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT7),              (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)((P3_OFF ^ BIT2) | BIT7),     (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT3),              (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT3),              (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)((P2_OFF ^ BIT3) | BIT6),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT3),              (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT3),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
-                                             { (char)P1_OFF,            (char)((P2_OFF ^ BIT3) | BIT1),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)((P2_OFF ^ BIT3) | BIT0),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT3),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT3),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) }
+static const ledCommand_t led_seconds[60] = {{ (char)P1_OFF,                    (char)(P2_OFF ^ BIT3),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },    // 0 seconds
+                                             { (char)P1_OFF,                    (char)((P2_OFF ^ BIT3) | BIT7),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },             // 1 second
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT3),              (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },             // 2 seconds
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)((P3_OFF ^ BIT3) | BIT6),     (char)P4_OFF,           (char)PJ_OFF },                   // 3 seconds
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)((P3_OFF ^ BIT3) | BIT4),     (char)P4_OFF,           (char)PJ_OFF },                   // 4 seconds
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT6),              (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)PJ_OFF },                   // 5 seconds
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT3),              (char)(P4_OFF | BIT0),  (char)PJ_OFF },                   // 6 seconds
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)(PJ_OFF | BIT1) },    // 7 seconds
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT1),              (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)PJ_OFF },                   // 8 seconds
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT0),              (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)PJ_OFF },                   // 9 seconds
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)(PJ_OFF | BIT3) },    // 10 seconds
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)(PJ_OFF | BIT2) },    // 11 seconds
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)(PJ_OFF | BIT0) },    // 12 seconds
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT7),              (char)(P3_OFF ^ BIT3),              (char)P4_OFF,           (char)PJ_OFF },                   // 13 seconds
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)((P3_OFF ^ BIT3) | BIT7),     (char)P4_OFF,           (char)PJ_OFF },                   // 14 seconds
+                                             { (char)(P1_OFF ^ BIT4),           (char)P2_OFF,                       (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },                   // 15 seconds
+                                             { (char)(P1_OFF ^ BIT4),           (char)P2_OFF,                       (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },              // 16 seconds
+                                             { (char)(P1_OFF ^ BIT4),           (char)(P2_OFF | BIT6),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },              // 17 seconds
+                                             { (char)(P1_OFF ^ BIT4),           (char)P2_OFF,                       (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },              // 18 seconds
+                                             { (char)(P1_OFF ^ BIT4),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },              // 19 seconds
+                                             { (char)(P1_OFF ^ BIT4),           (char)(P2_OFF | BIT1),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },              // 20 seconds
+                                             { (char)(P1_OFF ^ BIT4),           (char)(P2_OFF | BIT0),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },              // 21 seconds
+                                             { (char)(P1_OFF ^ BIT4),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },              // 22 seconds
+                                             { (char)(P1_OFF ^ BIT4),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) },              // 23 seconds
+                                             { (char)(P1_OFF ^ BIT4),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },              // 24 seconds
+                                             { (char)(P1_OFF ^ BIT4),           (char)(P2_OFF | BIT7),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },              // 25 seconds
+                                             { (char)(P1_OFF ^ BIT4),           (char)P2_OFF,                       (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },              // 26 seconds
+                                             { (char)(P1_OFF ^ BIT2),           (char)P2_OFF,                       (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },              // 27 seconds
+                                             { (char)(P1_OFF ^ BIT2),           (char)P2_OFF,                       (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },              // 28 seconds
+                                             { (char)(P1_OFF ^ BIT2),           (char)(P2_OFF | BIT6),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },              // 29 seconds
+                                             { (char)(P1_OFF ^ BIT2),           (char)P2_OFF,                       (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT2),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
+                                             { (char)(P1_OFF ^ BIT2),           (char)(P2_OFF | BIT1),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT2),           (char)(P2_OFF | BIT0),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT2),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
+                                             { (char)(P1_OFF ^ BIT2),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
+                                             { (char)(P1_OFF ^ BIT2),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
+                                             { (char)(P1_OFF ^ BIT2),           (char)(P2_OFF | BIT7),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT2),           (char)P2_OFF,                       (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)((P3_OFF ^ BIT2) | BIT6),       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)((P3_OFF ^ BIT2) | BIT4),       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT6),              (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT2),              (char)(P4_OFF | BIT0),  (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT1),              (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT0),              (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT7),              (char)(P3_OFF ^ BIT2),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)((P3_OFF ^ BIT2) | BIT7),     (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT3),              (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT3),              (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)((P2_OFF ^ BIT3) | BIT6),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT3),              (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT3),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
+                                             { (char)P1_OFF,                    (char)((P2_OFF ^ BIT3) | BIT1),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)((P2_OFF ^ BIT3) | BIT0),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT3),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT3),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) }
 };
 
-static const ledCommand_t led_minutes[60] = {{ (char)P1_OFF,            (char)(P2_OFF ^ BIT4),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
-                                             { (char)P1_OFF,            (char)((P2_OFF ^ BIT4) | BIT7),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT4),              (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)((P3_OFF ^ BIT0) | BIT6),     (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)((P3_OFF ^ BIT0) | BIT4),     (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT6),              (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT0),              (char)(P4_OFF | BIT0),  (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT1),              (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT0),              (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT7),              (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)((P3_OFF ^ BIT0) | BIT7),     (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT5),   (char)P2_OFF,                       (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT5),   (char)P2_OFF,                       (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT5),   (char)(P2_OFF | BIT6),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT5),   (char)P2_OFF,                       (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT5),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
-                                             { (char)(P1_OFF ^ BIT5),   (char)(P2_OFF | BIT1),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT5),   (char)(P2_OFF | BIT0),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT5),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
-                                             { (char)(P1_OFF ^ BIT5),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
-                                             { (char)(P1_OFF ^ BIT5),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
-                                             { (char)(P1_OFF ^ BIT5),   (char)(P2_OFF | BIT7),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT5),   (char)P2_OFF,                       (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT3),   (char)P2_OFF,                       (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT3),   (char)P2_OFF,                       (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT3),   (char)(P2_OFF | BIT6),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT3),   (char)P2_OFF,                       (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT3),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
-                                             { (char)(P1_OFF ^ BIT3),   (char)(P2_OFF | BIT1),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT3),   (char)(P2_OFF | BIT0),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT3),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
-                                             { (char)(P1_OFF ^ BIT3),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
-                                             { (char)(P1_OFF ^ BIT3),   (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
-                                             { (char)(P1_OFF ^ BIT3),   (char)(P2_OFF | BIT7),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)(P1_OFF ^ BIT3),   (char)P2_OFF,                       (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)((P3_OFF ^ BIT1) | BIT6),     (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)((P3_OFF ^ BIT1) | BIT4),     (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT6),              (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT1),              (char)(P4_OFF | BIT0),  (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT1),              (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT0),              (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
-                                             { (char)P1_OFF,            (char)(P2_OFF | BIT7),              (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)P2_OFF,                       (char)((P3_OFF ^ BIT1) | BIT7),     (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT4),              (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT4),              (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)((P2_OFF ^ BIT4) | BIT6),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT4),              (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT4),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
-                                             { (char)P1_OFF,            (char)((P2_OFF ^ BIT4) | BIT1),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)((P2_OFF ^ BIT4) | BIT0),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT4),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
-                                             { (char)P1_OFF,            (char)(P2_OFF ^ BIT4),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) }
+static const ledCommand_t led_minutes[60] = {{ (char)P1_OFF,                    (char)(P2_OFF ^ BIT4),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
+                                             { (char)P1_OFF,                    (char)((P2_OFF ^ BIT4) | BIT7),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT4),              (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)((P3_OFF ^ BIT0) | BIT6),     (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)((P3_OFF ^ BIT0) | BIT4),     (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT6),              (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT0),              (char)(P4_OFF | BIT0),  (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT1),              (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT0),              (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT7),              (char)(P3_OFF ^ BIT0),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)((P3_OFF ^ BIT0) | BIT7),     (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT5),           (char)P2_OFF,                       (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT5),           (char)P2_OFF,                       (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT5),           (char)(P2_OFF | BIT6),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT5),           (char)P2_OFF,                       (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT5),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
+                                             { (char)(P1_OFF ^ BIT5),           (char)(P2_OFF | BIT1),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT5),           (char)(P2_OFF | BIT0),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT5),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
+                                             { (char)(P1_OFF ^ BIT5),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
+                                             { (char)(P1_OFF ^ BIT5),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
+                                             { (char)(P1_OFF ^ BIT5),           (char)(P2_OFF | BIT7),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT5),           (char)P2_OFF,                       (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT3),           (char)P2_OFF,                       (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT3),           (char)P2_OFF,                       (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT3),           (char)(P2_OFF | BIT6),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT3),           (char)P2_OFF,                       (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT3),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
+                                             { (char)(P1_OFF ^ BIT3),           (char)(P2_OFF | BIT1),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT3),           (char)(P2_OFF | BIT0),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT3),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
+                                             { (char)(P1_OFF ^ BIT3),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
+                                             { (char)(P1_OFF ^ BIT3),           (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
+                                             { (char)(P1_OFF ^ BIT3),           (char)(P2_OFF | BIT7),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)(P1_OFF ^ BIT3),           (char)P2_OFF,                       (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)((P3_OFF ^ BIT1) | BIT6),     (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)((P3_OFF ^ BIT1) | BIT4),     (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT6),              (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT1),              (char)(P4_OFF | BIT0),  (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT1),              (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT0),              (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
+                                             { (char)P1_OFF,                    (char)(P2_OFF | BIT7),              (char)(P3_OFF ^ BIT1),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)P2_OFF,                       (char)((P3_OFF ^ BIT1) | BIT7),     (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT4),              (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT4),              (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)((P2_OFF ^ BIT4) | BIT6),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT4),              (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT4),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
+                                             { (char)P1_OFF,                    (char)((P2_OFF ^ BIT4) | BIT1),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)((P2_OFF ^ BIT4) | BIT0),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT4),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
+                                             { (char)P1_OFF,                    (char)(P2_OFF ^ BIT4),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) }
 
 };
 
-static const ledCommand_t led_hours[24] = {{ (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
-                                           { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT7),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)(P3_OFF | BIT7),  (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)(P3_OFF | BIT6),  (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)(P3_OFF | BIT4),  (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT6),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)(P4_OFF | BIT0),  (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
-                                           { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT1),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT0),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
-                                           { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT7),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)(P3_OFF | BIT7),  (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)(P3_OFF | BIT6),  (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)(P3_OFF | BIT4),  (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT6),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)(P4_OFF | BIT0),  (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
-                                           { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT1),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)(P2_OFF | BIT0),  (char)P3_OFF,           (char)P4_OFF,           (char)PJ_OFF },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
-                                           { (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT2) }
+static const ledCommand_t led_hours[24] = {{ (char)(P1_OFF ^ BIT1),             (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
+                                           { (char)(P1_OFF ^ BIT1),             (char)(P2_OFF | BIT7),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)(P1_OFF ^ BIT1),             (char)P2_OFF,                       (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)(P1_OFF ^ BIT1),             (char)P2_OFF,                       (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)(P1_OFF ^ BIT1),             (char)P2_OFF,                       (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)(P1_OFF ^ BIT1),             (char)(P2_OFF | BIT6),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)(P1_OFF ^ BIT1),             (char)P2_OFF,                       (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },
+                                           { (char)(P1_OFF ^ BIT1),             (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
+                                           { (char)(P1_OFF ^ BIT1),             (char)(P2_OFF | BIT1),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)(P1_OFF ^ BIT1),             (char)(P2_OFF | BIT0),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)(P1_OFF ^ BIT1),             (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
+                                           { (char)(P1_OFF ^ BIT1),             (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) },
+                                           { (char)((P1_OFF ^ BIT1) | BIT0),    (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },
+                                           { (char)((P1_OFF ^ BIT1) | BIT0),    (char)(P2_OFF | BIT7),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)((P1_OFF ^ BIT1) | BIT0),    (char)P2_OFF,                       (char)(P3_OFF | BIT7),              (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)((P1_OFF ^ BIT1) | BIT0),    (char)P2_OFF,                       (char)(P3_OFF | BIT6),              (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)((P1_OFF ^ BIT1) | BIT0),    (char)P2_OFF,                       (char)(P3_OFF | BIT4),              (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)((P1_OFF ^ BIT1) | BIT0),    (char)(P2_OFF | BIT6),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)((P1_OFF ^ BIT1) | BIT0),    (char)P2_OFF,                       (char)P3_OFF,                       (char)(P4_OFF | BIT0),  (char)PJ_OFF },
+                                           { (char)((P1_OFF ^ BIT1) | BIT0),    (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT1) },
+                                           { (char)((P1_OFF ^ BIT1) | BIT0),    (char)(P2_OFF | BIT1),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)((P1_OFF ^ BIT1) | BIT0),    (char)(P2_OFF | BIT0),              (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },
+                                           { (char)((P1_OFF ^ BIT1) | BIT0),    (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT3) },
+                                           { (char)((P1_OFF ^ BIT1) | BIT0),    (char)P2_OFF,                       (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT2) }
                                            //{ (char)(P1_OFF ^ BIT1),     (char)P2_OFF,           (char)P3_OFF,           (char)P4_OFF,           (char)(PJ_OFF | BIT0) }
 };
 
@@ -182,7 +182,7 @@ void reset_leds()
 
 
 #pragma FUNC_ALWAYS_INLINE(LED_SetCurrentLED)
-inline void LED_SetCurrentLED(unsigned char index, selectedRow_t row)
+inline void LED_SetCurrentLED(unsigned char index, unsigned int row)
 {
     reset_leds();
     switch(row)

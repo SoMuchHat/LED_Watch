@@ -11,8 +11,9 @@ GEN_CMDS__FLAG :=
 
 ORDERED_OBJS += \
 "./led_controller.obj" \
+"./light_detect.obj" \
 "./main.obj" \
-"../lnk_msp430fr5721.cmd" \
+"../lnk_msp430fr5725.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibmath.a \
 -llibc.a \
@@ -142,7 +143,7 @@ all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 LED_Watch_v1.1.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MSP430 Linker'
-	"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/bin/cl430" -vmspx --code_model=small --data_model=small -O0 --opt_for_speed=1 --align_for_power --use_hw_mpy=F5 --advice:power=all --define=__MSP430FR5721__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"LED_Watch_v1.1.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccsv7/ccs_base/msp430/include" -i"C:/ti/ccsv7/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/lib" -i"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/include" --reread_libs --define=_MPU_ENABLE --diag_wrap=off --display_error_number --warn_sections --xml_link_info="LED_Watch_v1.1_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "LED_Watch_v1.1.out" $(ORDERED_OBJS)
+	"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/bin/cl430" -vmspx --code_model=small --data_model=small -O1 --opt_for_speed=0 --align_for_power --use_hw_mpy=F5 --advice:power=all --define=__MSP430FR5725__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"LED_Watch_v1.1.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccsv7/ccs_base/msp430/include" -i"C:/ti/ccsv7/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/lib" -i"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.4.LTS/include" --reread_libs --define=_MPU_ENABLE --diag_wrap=off --display_error_number --warn_sections --xml_link_info="LED_Watch_v1.1_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "LED_Watch_v1.1.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -155,8 +156,8 @@ LED_Watch_v1.1.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "led_controller.obj" "main.obj" 
-	-$(RM) "led_controller.d" "main.d" 
+	-$(RM) "led_controller.obj" "light_detect.obj" "main.obj" 
+	-$(RM) "led_controller.d" "light_detect.d" "main.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

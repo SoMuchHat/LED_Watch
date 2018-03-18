@@ -14,15 +14,13 @@
 #define P4_OFF 0x00
 #define PJ_OFF 0x00
 
-typedef enum {
-    HOURS_ROW = 0,
-    MINUTES_ROW = 1,
-    SECONDS_ROW = 2,
-    NO_ROW = 3
-} selectedRow_t;
+#define HOURS_ROW       0
+#define MINUTES_ROW     1
+#define SECONDS_ROW     2
+#define NO_ROW          3
 
 void reset_leds();
 
-void LED_SetCurrentLED(unsigned char index, selectedRow_t row);
+void LED_SetCurrentLED(unsigned char index, unsigned int row);
 
 #endif /* HEADERS_LED_CONTROLLER_H_ */
