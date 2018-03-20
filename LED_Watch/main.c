@@ -13,7 +13,7 @@
 
 volatile unsigned char gbl_nextState = 1;
 volatile unsigned char gbl_blink_b = 1;						// Blink off = 0, blink on = 1
-
+volatile unsigned int gbl_blink_count = 0;
 
 
 
@@ -43,20 +43,20 @@ volatile unsigned char button2_pushed = 0;
 volatile unsigned char wakeTriggered = 0;
 volatile unsigned char gbl_measureLight_b = 0;
 
-unsigned int determineNextSleepTime(char secNow, char minNow, char hourNow, char sleepInterval, char sleepEnabled)
+unsigned long determineNextSleepTime(char secNow, char minNow, char hourNow, char sleepInterval, char sleepEnabled)
 {
     if (sleepEnabled == 1)
     {
-        unsigned int sleepTime = ((hourNow * 60) + minNow) * 60 + secNow + sleepInterval;
-        if (sleepTime >= 86400)
+        unsigned long sleepTime = ((hourNow * 60) + minNow) * 60 + secNow + sleepInterval;
+        if (sleepTime >= 86400ul)
         {
-            return (sleepTime - 86400);
+            return (sleepTime - 86400ul);
         }
         return sleepTime;
     }
     else
     {
-        return (unsigned int)1000000;     // Impossible to reach sleep time
+        return 1000000ul;     // Impossible to reach sleep time
     }
 }
 
@@ -85,11 +85,11 @@ void main(void)
 
     char periodicMode = PERIODIC_MINUTE;
     RTCCTL1 |= periodicMode;
-    //RTCCTL0 |= RTCTEVIE;
+    RTCCTL0 |= RTCTEVIE;
 
     signed char sleepTimeInterval = 10;                       // Time to sleep after no input (valid values 0 - 59 seconds)
-    unsigned int nextSleepTime = (unsigned int) sleepTimeInterval;             // Unit seconds (Hours * minutes * 60 + seconds)
-    unsigned char sleepEnabled_b = 0;
+    unsigned long nextSleepTime = (unsigned long) sleepTimeInterval;             // Unit seconds (Hours * minutes * 60 + seconds)
+    unsigned char sleepEnabled_b = 1;
     //unsigned int nextSleepTime = 0xFFFFFFFF;
     unsigned char selectedRow = 0;
 
@@ -104,8 +104,40 @@ void main(void)
             nextSleepTime = determineNextSleepTime(rtc_seconds, rtc_minutes, rtc_hours, sleepTimeInterval, sleepEnabled_b);
         }
 
+        char temp_seconds = 0;
+        char temp_minutes = 0;
+        char temp_hours = 0;
+
         unsigned char measureLight_b = gbl_measureLight_b;
         unsigned char nextState = gbl_nextState;
+
+        if ((RTCCTL01 & RTCRDY) != 0)
+        {
+            if (gbl_setNewTime_b == 1)
+            {
+                // Change RTC time to requested new time
+                RTCSEC = gbl_disp_seconds;
+                RTCMIN = gbl_disp_minutes;
+                RTCHOUR = gbl_disp_hours;
+                gbl_setNewTime_b = 0;
+                gbl_blink_b = 1;
+                nextState = ShowTime;
+            }
+            else
+            {
+                temp_seconds = RTCSEC;
+                temp_minutes = RTCMIN;
+                temp_hours = RTCHOUR;
+                gbl_measureLight_b = 1;
+
+                if ((RTCCTL01 & RTCRDY) != 0)
+                {
+                    rtc_seconds = temp_seconds;
+                    rtc_minutes = temp_minutes;
+                    rtc_hours = temp_hours;
+                }
+            }
+        }
 
         if (nextState == ShowTime)
         {
@@ -136,7 +168,7 @@ void main(void)
                 __disable_interrupt();
                 gbl_measureLight_b = 0;
                 __enable_interrupt();
-                unsigned int light = measureLightIntensity(disp_hours);
+                //unsigned int light = measureLightIntensity(disp_hours);
             }
 
             if (displayMode == DISPLAY_MODE_0)
@@ -179,9 +211,9 @@ void main(void)
                         hours = hours - 12;
                     }
                     disp_seconds = (5 * hours);
-                    disp_seconds = (disp_seconds == 0) ? 0 : (disp_seconds - 1);
+                    disp_seconds = (disp_seconds == 0) ? 0 : (disp_seconds);
                     disp_minutes = 5 * hours;
-                    disp_minutes = (disp_minutes == 0) ? 0 : (disp_minutes - 1);
+                    disp_minutes = (disp_minutes == 0) ? 0 : (disp_minutes);
                 }
 
                 if (selectedRow == SECONDS_ROW)
@@ -190,6 +222,14 @@ void main(void)
                     if (i >= 3)
                     {
                         i = 0;
+                    }
+                }
+                if (selectedRow == MINUTES_ROW)
+                {
+                    i = i + 1;
+                    if (i >= 3)
+                    {
+                        i = 1;
                     }
                 }
 
@@ -355,42 +395,13 @@ void main(void)
                 }
                 case PERIODIC_MIDNIGHT:
                 {
-                    switch (selectedRow)
-                    {
-                    case SECONDS_ROW:
-                        LED_SetCurrentLED(0, selectedRow);
-                        break;
-
-                    case MINUTES_ROW:
-                        LED_SetCurrentLED(0, selectedRow);
-                        break;
-
-                    case HOURS_ROW:
-                        LED_SetCurrentLED(0, selectedRow);
-                        break;
-                    default:
-                        break;
-                    }
+                    LED_SetCurrentLED(0, selectedRow);
                     break;
                 }
+
                 case PERIODIC_NOON:
                 {
-                    switch (selectedRow)
-                    {
-                    case SECONDS_ROW:
-                        LED_SetCurrentLED(0, selectedRow);
-                        break;
-
-                    case MINUTES_ROW:
-                        LED_SetCurrentLED(0, selectedRow);
-                        break;
-
-                    case HOURS_ROW:
-                        LED_SetCurrentLED(12, selectedRow);
-                        break;
-                    default:
-                        break;
-                    }
+                    LED_SetCurrentLED(12, selectedRow);
                     break;
                 }
                 default:    // PERIODIC_NONE
@@ -420,9 +431,13 @@ void main(void)
                 __enable_interrupt();
                 nextSleepTime = (unsigned int)100000;
             }
-            else if ((nextState == ShowTime) && (button1_hold_seconds >= 2) && (button2_hold_seconds >= 2))     // How to exit SetSleepTime mode
+            else if ((nextState == SetSleepTime) && (button1_hold_seconds >= 2) && (button2_hold_seconds >= 2))     // How to exit SetSleepTime mode
             {
                 nextState = ShowTime;
+                __disable_interrupt();
+                gb_button1_hold_seconds = 0;
+                gb_button2_hold_seconds = 0;
+                __enable_interrupt();
             }
         }
         else
@@ -448,6 +463,8 @@ void main(void)
                     }
                     __disable_interrupt();
                     gb_button1_hold_seconds = 0;
+                    gbl_blink_count = 0;
+                    gbl_blink_b = 1;
                     __enable_interrupt();
 
                 }
@@ -508,7 +525,7 @@ void main(void)
                     {
                         case HOURS_ROW:
                         {
-                            if (disp_hours == 11)
+                            if (disp_hours == 23)
                             {
                                 disp_hours = 0;
                             }
@@ -547,11 +564,17 @@ void main(void)
 
                     __disable_interrupt();
                     gb_button2_hold_seconds = 0;
+                    gbl_blink_count = 0;
+                    gbl_blink_b = 1;
                     __enable_interrupt();
                 }
                 else if ((nextState == ShowTime && lastButton2State == 0))
                 {
                     if (displayMode == DISPLAY_MODE_0)
+                    {
+                        displayMode = DISPLAY_MODE_1;
+                    }
+                    else if (displayMode == DISPLAY_MODE_1)
                     {
                         displayMode = DISPLAY_MODE_2;
                     }
@@ -607,7 +630,7 @@ void main(void)
         gbl_disp_minutes = disp_minutes;
         gbl_disp_hours = disp_hours;
 
-        gbl_blink_b = blink_b;
+        //gbl_blink_b = blink_b;
         //gbl_selectedRow = selectedRow;
 
         gbl_setNewTime_b = setNewTime_b;
@@ -617,12 +640,12 @@ void main(void)
         __enable_interrupt();
 
         // Determine if we should sleep
-        unsigned int currentTime = ((rtc_hours * 60) + rtc_minutes) * 60 + rtc_seconds;
-        if ((currentTime > nextSleepTime) && (currentTime + nextSleepTime < 86400) && (sleepEnabled_b == 1))
+        unsigned long currentTime = ((rtc_hours * 60) + rtc_minutes) * 60 + rtc_seconds;
+        if ((currentTime > nextSleepTime) && (currentTime + nextSleepTime < 86400ul) && (sleepEnabled_b == 1))
         {
             reset_leds();
-            nextSleepTime = (unsigned int)0xFFFFFFFF;                 // A value that's impossible to reach to prevent going right back to sleep before recalculating new sleep time
-            //__bis_SR_register(LPM4_bits + GIE);
+            nextSleepTime = 0xFFFFFFFul;                 // A value that's impossible to reach to prevent going right back to sleep before recalculating new sleep time
+            __bis_SR_register(LPM4_bits + GIE);
         }
     }
 }
@@ -681,10 +704,11 @@ void initialize()
 
 
 	// RTC Setup
-	RTCCTL01 |= RTCHOLD + RTCRDYIE; // Hold RTC, enable RTC ready interrupt (1 sec interval)
+	//RTCCTL01 |= RTCHOLD + RTCRDYIE; // Hold RTC, enable RTC ready interrupt (1 sec interval)
+	RTCCTL01 |= RTCHOLD;
 	RTCSEC = 0x0;                  // Set seconds to 0
-	RTCMIN = 58;                  // Set minutes to 0
-	RTCHOUR = 22;                 // Set hours to 0
+	RTCMIN = 0;                  // Set minutes to 0
+	RTCHOUR = 0;                 // Set hours to 0
 	RTCCTL01 &= ~RTCHOLD;           //Release RTC hold
 
 
@@ -704,8 +728,8 @@ void initialize()
 	// Timer for sleeping between LED updating
 	// @TODO Consider running this timer off SMCLK. That way, it is disabled when in sleep mode 3.0
     TA1CCTL0 = CCIE;
-    //TA1CCR0 = 5;                    // TASSEL_2 / ID (250 kHz / 4 == 62500) / 62500 = 1 Hz
-    TA1CCR0 = 50;                                  // Used for blinking LEDs
+    TA1CCR0 = 10;                    // TASSEL_2 / ID (250 kHz / 4 == 62500) / 62500 = 1 Hz
+    //TA1CCR0 = 50;                                  // Used for blinking LEDs
 
     TA1CCR1 = 62500;                       // TASSEL_2 / ID (250 kHz / 4 == 62500) / 63 = ~ 1 kHz
                                         // This timer is used for updating LEDs
@@ -724,6 +748,7 @@ __interrupt void rtc_isr(void)
 {
     switch (RTCIV)
     {
+        /*
         case RTCIV_RTCRDYIFG:
         {
             if (gbl_setNewTime_b == 1)
@@ -746,6 +771,7 @@ __interrupt void rtc_isr(void)
 
             break;
         }
+        */
         case RTCIV_RTCTEVIFG:
         {
             wakeTriggered = 1;
@@ -792,7 +818,6 @@ __interrupt void Timer1_A0_ISR(void)
     //blink = blink ^ 1;
     //TA1CCR0 += 62500;
 
-
     //int interruptSource = TA1IV;
 
     if (gbl_nextState != SetTime)
@@ -804,6 +829,39 @@ __interrupt void Timer1_A0_ISR(void)
             {
                 gbl_selectedRow = HOURS_ROW;
             }
+        }
+        else if (displayMode == DISPLAY_MODE_1)
+        {
+            static unsigned char count = 0;
+            if (gbl_selectedRow == SECONDS_ROW)
+            {
+                if (count < 3)
+                {
+                    count ++;
+                }
+                else
+                {
+                    gbl_selectedRow = 0;
+                    count = 0;
+                }
+            }
+            if (gbl_selectedRow == MINUTES_ROW)
+            {
+                if (count < 2)
+                {
+                    count ++;
+                }
+                else
+                {
+                    gbl_selectedRow ++;
+                    count = 0;
+                }
+            }
+            else
+            {
+                gbl_selectedRow ++;
+            }
+
         }
         else
         {
@@ -836,62 +894,19 @@ __interrupt void Timer1_A0_ISR(void)
                 gbl_selectedRow = 0;
             }
         }
-        /*
-        else
+    }
+    else
+    {
+        gbl_blink_count ++;
+        if (gbl_blink_count > 12500)
         {
-            static unsigned char count = 0;
-
-            if (gbl_selectedRow == SECONDS_ROW)
-            {
-                if (count < rtc_seconds)
-                {
-                    count++;
-                }
-                else
-                {
-                    count = 0;
-                    gbl_selectedRow ++;
-                }
-            }
-            else if (gbl_selectedRow == MINUTES_ROW)
-            {
-                if (count < rtc_minutes)
-                {
-                    count++;
-                }
-                else
-                {
-                    count = 0;
-                    gbl_selectedRow ++;
-                }
-            }
-            else if (gbl_selectedRow == HOURS_ROW)
-            {
-                unsigned char hours = rtc_hours;
-                if (hours >= 12)
-                {
-                    hours -= 12;
-                }
-                if (count < hours)
-                {
-                    count++;
-                }
-                else
-                {
-                    count = 0;
-                    gbl_selectedRow ++;
-                }
-            }
-            if (gbl_selectedRow == NO_ROW)
-            {
-                gbl_selectedRow = 0;
-            }
+            gbl_blink_b ^= 1;
+            gbl_blink_count = 0;
         }
-        */
     }
 
-    //TA1CCR0 += 5;
-    TA1CCR0 += 50;
+    TA1CCR0 += 10;
+    //TA1CCR0 += 50;
 }
 
 #pragma vector = TIMER1_A1_VECTOR
@@ -907,7 +922,7 @@ __interrupt void Timer1_A1_ISR(void)
     default:
         if (gbl_nextState == SetTime)
         {
-            gbl_blink_b ^= 1;
+            //gbl_blink_b ^= 1;
         }
 
         if (global_shift_reg_1 == 0xFF) // The button has been held for 3 seconds
