@@ -11,52 +11,52 @@
 #define DISPLAY_MODE_1  1
 #define DISPLAY_MODE_2  2
 
-volatile unsigned char gbl_nextState = 1;
+volatile unsigned char gbl_nextState = 1;					// Global copy of nextState for interrupts
 volatile unsigned char gbl_blink_b = 1;						// Blink off = 0, blink on = 1
-volatile unsigned int gbl_blink_count = 0;
+volatile unsigned int gbl_blink_count = 0;					// Used for setting blink frequency
+
+volatile unsigned char gbl_selectedRow = 0;					// Global copy of selectedRow for interrupts
+
+/// @todo Move to be inside of main or remove
+volatile unsigned char gbl_setNewTime_b = 0;				// Global copy of setNewTime_b
 
 
+volatile char displayMode = DISPLAY_MODE_2;					// Current display mode
+
+char gbl_disp_seconds;										// Global display seconds
+char gbl_disp_minutes;										// Global display minutes
+char gbl_disp_hours;										// Global display hours
+
+volatile unsigned char global_shift_reg_1 = 0;				// Global shift register for button 1
+volatile unsigned char global_shift_reg_2 = 0;				// Global shift register for button 2
+
+volatile unsigned char gb_button1_hold_seconds = 0;			// Global time button 1 has been held down
+volatile unsigned char gb_button2_hold_seconds = 0;			// Global time button 2 has been held down
+
+volatile unsigned char wakeTriggered = 0;                        // If RTC time event caused wake
+
+char periodicMode = PERIODIC_MINUTE;
 
 
-volatile unsigned char gbl_selectedRow = 0;
-volatile char rtc_seconds;
-volatile char rtc_minutes;
-volatile char rtc_hours;
+void EnterLPM35(void);
+void ExitLPM35(void);
+void GPIO_LPM_ENTER();
+void GPIO_LPM_EXIT();
 
-volatile unsigned char gbl_setNewTime_b = 0;
-
-volatile char displayMode = DISPLAY_MODE_2;
-
-char gbl_disp_seconds;
-char gbl_disp_minutes;
-char gbl_disp_hours;
-
-volatile unsigned char global_shift_reg_1 = 0;
-volatile unsigned char global_shift_reg_2 = 0;
-
-volatile unsigned char gb_button1_hold_seconds = 0;
-volatile unsigned char gb_button2_hold_seconds = 0;
-
-volatile unsigned char button1_pushed = 0;
-volatile unsigned char button2_pushed = 0;
-
-volatile unsigned char wakeTriggered = 0;
-volatile unsigned char gbl_measureLight_b = 0;
-
-unsigned long determineNextSleepTime(char secNow, char minNow, char hourNow, char sleepInterval, char sleepEnabled)
+char determineNextSleepTime(char secNow, char sleepInterval, char sleepEnabled)
 {
-    if (sleepEnabled == 1)
+    if (sleepEnabled == 1 && sleepInterval < 60)
     {
-        unsigned long sleepTime = ((hourNow * 60) + minNow) * 60 + secNow + sleepInterval;
-        if (sleepTime >= 86400ul)
+        char sleepTime = secNow + sleepInterval;
+        if (sleepTime >= 60)
         {
-            return (sleepTime - 86400ul);
+            return (sleepTime - 60);
         }
         return sleepTime;
     }
     else
     {
-        return 1000000ul;     // Impossible to reach sleep time
+        return 60;     // Impossible to reach sleep time
     }
 }
 
@@ -64,55 +64,79 @@ void main(void)
 {
     WDTCTL = WDTPW + WDTHOLD;    // Stop watchdog timer
 
-    rtc_seconds = 0;
-    rtc_minutes = 0;
-    rtc_hours = 0;
+	/* 
+	 * The RTC S/M/H variables are used because the RTCMIN, RTCSEC, RTCHOUR registers do not hold valid 
+	 * values when they are being updated by the RTC hardware module. Therefore, the value in each 
+	 * register is copied only when the values are valid (RTCRDY == 1).
+	 */
+    char rtc_seconds = 0;									// Current RTC seconds
+    char rtc_minutes = 0;									// Current RTC minutes
+    char rtc_hours = 0;										// Current RTC hours
 
-    initialize();
-    measureLightInit();
+	unsigned char measureLight_b = 0;					// Global boolean - Should light measure start
 
+	if (SYSRSTIV == SYSRSTIV_LPM5WU)
+	{
+	    ExitLPM35();
+	}
+	else
+	{
+	    initialize();
+	    measureLightInit();
+	}
+	/*
+	 * The display S/M/H variables are used to determine which LED should be displayed in the
+	 * seconds, minutes, and hours row of LEDs.
+	 */
     char disp_seconds;
     char disp_minutes;
     char disp_hours;
 
+	/*
+	 * Used to store last button state. Used for button press qualification
+	 */
     char lastButton1State = 0;
     char lastButton2State = 0;
 
+	/*
+	 * Shift register for button debouncing.
+	 */
     unsigned char button_shift_reg_1 = 0;
     unsigned char button_shift_reg_2 = 0;
     unsigned char button1_hold_seconds = 0;
     unsigned char button2_hold_seconds = 0;
 
-    char periodicMode = PERIODIC_MINUTE;
-    RTCCTL1 |= periodicMode;
-    RTCCTL0 |= RTCTEVIE;
+	/*
+	 * Default RTC periodic wake event will cause the watch to wake every time the minute changes
+	 */
 
-    signed char sleepTimeInterval = 10;                       // Time to sleep after no input (valid values 0 - 59 seconds)
-    unsigned long nextSleepTime = (unsigned long) sleepTimeInterval;             // Unit seconds (Hours * minutes * 60 + seconds)
+
+    signed char sleepTimeInterval = 10;               		// Time to sleep after no input (valid values 0 - 59 seconds)
+    char nextSleepTime = sleepTimeInterval;             // Unit seconds (Hours * minutes * 60 + seconds)
     unsigned char sleepEnabled_b = 1;
     //unsigned int nextSleepTime = 0xFFFFFFFF;
     unsigned char selectedRow = 0;
+    //unsigned char measureLight_b = 0;
+
+    //char wakeTriggered = 0;
+
 
     while(1)
     {
-        // Get a local copy of all global variables for this current iteration to prevent memory faults during interrupts
-        __disable_interrupt();
-        if (wakeTriggered == 1)
-        {
-
-            wakeTriggered = 0;
-            nextSleepTime = determineNextSleepTime(rtc_seconds, rtc_minutes, rtc_hours, sleepTimeInterval, sleepEnabled_b);
-        }
-
         char temp_seconds = 0;
         char temp_minutes = 0;
         char temp_hours = 0;
 
-        unsigned char measureLight_b = gbl_measureLight_b;
+        //unsigned char measureLight_b = gbl_measureLight_b;
+		
+        __disable_interrupt();
+		
         unsigned char nextState = gbl_nextState;
 
+		// Update time from RTC registers if they are currently valid
         if ((RTCCTL01 & RTCRDY) != 0)
         {
+			// If we have finished setting time, update RTC registers
             if (gbl_setNewTime_b == 1)
             {
                 // Change RTC time to requested new time
@@ -128,17 +152,31 @@ void main(void)
                 temp_seconds = RTCSEC;
                 temp_minutes = RTCMIN;
                 temp_hours = RTCHOUR;
-                gbl_measureLight_b = 1;
+                measureLight_b = 1;
 
+				/*
+				 * Ensure that the RTCRDY bit is still set. Could end up in a situation where RTCRDY was
+				 * set but by the time we get to reading the registers, the registers are no longer valid.
+				 * If no longer valid, don't update our current copy of the time
+				 */
                 if ((RTCCTL01 & RTCRDY) != 0)
                 {
                     rtc_seconds = temp_seconds;
                     rtc_minutes = temp_minutes;
                     rtc_hours = temp_hours;
+
+                    if (wakeTriggered == 1)
+                    {
+                        wakeTriggered = 0;
+                        nextSleepTime = determineNextSleepTime(rtc_seconds, sleepTimeInterval, sleepEnabled_b);
+                    }
                 }
             }
         }
 
+
+
+		// If our nextState is to ShowTime, update disp copies to reflect real time.
         if (nextState == ShowTime)
         {
             disp_seconds = rtc_seconds;
@@ -147,6 +185,8 @@ void main(void)
             selectedRow = gbl_selectedRow;
         }
 
+		// Get a local copy of all global variables for this current iteration to prevent memory faults during interrupts
+		
         unsigned char blink_b = gbl_blink_b;
         unsigned char setNewTime_b = gbl_setNewTime_b;
 
@@ -156,7 +196,6 @@ void main(void)
         button1_hold_seconds = gb_button1_hold_seconds;
         button2_hold_seconds = gb_button2_hold_seconds;
 
-
         __enable_interrupt();
 
 
@@ -165,9 +204,7 @@ void main(void)
         {
             if (measureLight_b == 1)
             {
-                __disable_interrupt();
-                gbl_measureLight_b = 0;
-                __enable_interrupt();
+                measureLight_b = 0;
                 //unsigned int light = measureLightIntensity(disp_hours);
             }
 
@@ -184,10 +221,6 @@ void main(void)
                     break;
 
                 case HOURS_ROW:
-                    if (disp_hours >= 12)
-                    {
-                        disp_hours -= 12;
-                    }
                     LED_SetCurrentLED(disp_hours, selectedRow);
                     break;
                 default:
@@ -244,12 +277,6 @@ void main(void)
                     break;
 
                 case HOURS_ROW:
-                    /*
-                    if (disp_hours >= 12)
-                    {
-                        disp_hours -= 12;
-                    }
-                    */
                     LED_SetCurrentLED(disp_hours, selectedRow);
                     break;
                 default:
@@ -267,20 +294,7 @@ void main(void)
                 {
                     standardHours -= 12;
                 }
-                /*
-                if ( secs_i > disp_seconds)
-                {
-                    secs_i = 0;
-                }
-                if ( mins_i > disp_minutes)
-                {
-                    mins_i = 0;
-                }
-                if ( hours_i > standardHours)
-                {
-                    hours_i = 0;
-                }
-                */
+
                 switch (selectedRow)
                 {
                 case SECONDS_ROW:
@@ -376,7 +390,7 @@ void main(void)
                 reset_leds();
             }
 
-            nextSleepTime = (unsigned int)0xFFFFFFF;
+            nextSleepTime = 60;
         }
 
         else if (nextState == SetPeriodicAlarm)
@@ -395,13 +409,13 @@ void main(void)
                 }
                 case PERIODIC_MIDNIGHT:
                 {
-                    LED_SetCurrentLED(0, selectedRow);
+                    LED_SetCurrentLED(0, HOURS_ROW);
                     break;
                 }
 
                 case PERIODIC_NOON:
                 {
-                    LED_SetCurrentLED(12, selectedRow);
+                    LED_SetCurrentLED(12, HOURS_ROW);
                     break;
                 }
                 default:    // PERIODIC_NONE
@@ -429,11 +443,12 @@ void main(void)
                 gb_button1_hold_seconds = 0;
                 gb_button2_hold_seconds = 0;
                 __enable_interrupt();
-                nextSleepTime = (unsigned int)100000;
+                nextSleepTime = 60;
             }
             else if ((nextState == SetSleepTime) && (button1_hold_seconds >= 2) && (button2_hold_seconds >= 2))     // How to exit SetSleepTime mode
             {
                 nextState = ShowTime;
+				
                 __disable_interrupt();
                 gb_button1_hold_seconds = 0;
                 gb_button2_hold_seconds = 0;
@@ -445,7 +460,7 @@ void main(void)
             // If button 1 has been confirmed as being pushed
             if (button_shift_reg_1 == 0xFF)
             {
-                nextSleepTime = determineNextSleepTime(rtc_seconds, rtc_minutes, rtc_hours, sleepTimeInterval, sleepEnabled_b);
+                nextSleepTime = determineNextSleepTime(rtc_seconds, sleepTimeInterval, sleepEnabled_b);
                 //nextSleepTime = 0xFFFFFFFF;
                 if ((nextState == SetTime && lastButton1State == 0) || (nextState == SetTime && button1_hold_seconds >= 2))
                 {
@@ -517,7 +532,7 @@ void main(void)
             if (button_shift_reg_2 == 0xFF)
             {
 
-                nextSleepTime = determineNextSleepTime(rtc_seconds, rtc_minutes, rtc_hours, sleepTimeInterval, sleepEnabled_b);
+                nextSleepTime = determineNextSleepTime(rtc_seconds, sleepTimeInterval, sleepEnabled_b);
                 //nextSleepTime = 0xFFFFFFFF;
                 if ((nextState == SetTime && lastButton2State == 0) || (nextState == SetTime && button2_hold_seconds >= 1))
                 {
@@ -623,9 +638,6 @@ void main(void)
 
         __disable_interrupt();
 
-        //gb_button1_hold_seconds = button1_hold_seconds;
-        //gb_button2_hold_seconds = button2_hold_seconds;
-
         gbl_disp_seconds = disp_seconds;
         gbl_disp_minutes = disp_minutes;
         gbl_disp_hours = disp_hours;
@@ -640,12 +652,11 @@ void main(void)
         __enable_interrupt();
 
         // Determine if we should sleep
-        unsigned long currentTime = ((rtc_hours * 60) + rtc_minutes) * 60 + rtc_seconds;
-        if ((currentTime > nextSleepTime) && (currentTime + nextSleepTime < 86400ul) && (sleepEnabled_b == 1))
+        if ((rtc_seconds == nextSleepTime) && (sleepEnabled_b == 1))
         {
             reset_leds();
-            nextSleepTime = 0xFFFFFFFul;                 // A value that's impossible to reach to prevent going right back to sleep before recalculating new sleep time
-            __bis_SR_register(LPM4_bits + GIE);
+            nextSleepTime = 60;                 // A value that's impossible to reach to prevent going right back to sleep before recalculating new sleep time
+            EnterLPM35();
         }
     }
 }
@@ -705,12 +716,16 @@ void initialize()
 
 	// RTC Setup
 	//RTCCTL01 |= RTCHOLD + RTCRDYIE; // Hold RTC, enable RTC ready interrupt (1 sec interval)
-	RTCCTL01 |= RTCHOLD;
-	RTCSEC = 0x0;                  // Set seconds to 0
-	RTCMIN = 0;                  // Set minutes to 0
-	RTCHOUR = 0;                 // Set hours to 0
-	RTCCTL01 &= ~RTCHOLD;           //Release RTC hold
+    RTCCTL01 |= RTCHOLD;
 
+    RTCSEC = 0;                  // Set seconds to 0
+    RTCMIN = 0;                  // Set minutes to 0
+    RTCHOUR = 0;                 // Set hours to 0
+
+    RTCCTL01 &= ~RTCHOLD;           //Release RTC hold
+
+    RTCCTL1 |= periodicMode;
+    RTCCTL0 |= RTCTEVIE;                                    // Enable RTC wake event interrupt
 
 	// Timer for button debouncing
 	TB1CCTL0 = CCIE;
@@ -740,6 +755,133 @@ void initialize()
 	REFCTL0 &= ~OFIFG;
 
 	__bis_SR_register(GIE); //Enable interrupts
+}
+
+#pragma FUNC_ALWAYS_INLINE(GPIO_LPM_ENTER)
+void GPIO_LPM_ENTER()
+{
+    P1DIR = 0;
+    P1OUT = 0;
+    P1REN = 0xFF;
+
+    P2DIR = 0;
+    P2OUT = 0;
+    P2REN = 0xFF;
+
+    P3DIR = 0;
+    P3OUT = 0;
+    P3REN = 0xFF;
+
+    P4DIR = 0;
+    P4OUT = 0;
+    P4REN = 0xFF;
+}
+
+#pragma FUNC_ALWAYS_INLINE(GPIO_LPM_EXIT)
+void GPIO_LPM_EXIT()
+{
+    P1DIR = 0x3F;       // All P1 ports outputs except P1.6, P1.7
+    P1OUT = 0x3E;       // All outputs high except P1.0. P1.6, P1.7 pulldown selected
+    P1REN |= BIT6;      // Enable pulldown for P1.6
+    P1IES &= ~(BIT6);   // Interrupt on low -> high
+    P1IE |= BIT6;       // Enable interrupt for B1
+
+    P2DIR = 0xDB;       // All P2 ports outputs except P2.3, P2.5
+    P2OUT = 0x18;       // All outputs low except P2.3, P2.4. P2.2, P2.5 pulldown selected
+    P2REN |= BIT2;      // Enable pulldown for P2.2
+    P2IES &= ~(BIT2);   // Interrupt on low -> high
+    P2IE |= BIT2;       // Enable interrupt for B2
+
+    P3DIR = 0xDF;   // All P3 ports output except P3.5
+    P3OUT = 0x0F;   // All outputs low, P3.5 pulldown selected
+
+    P4DIR = BIT0;   // P4.0 is a output;
+    P4OUT = 0x00;   // All outputs low, P4.0 pulldown selected
+}
+
+void EnterLPM35(void)
+{
+    TB1CTL =  TBSSEL_2 + MC_0 + ID_2 + TBCLR;
+    TA1CTL = TASSEL_2 + MC_0 + ID_2 + TAIE + TACLR;
+
+    PMMCTL0_H = PMMPW_H;
+    PMMCTL0_L |= PMMREGOFF;
+
+    GPIO_LPM_ENTER();
+
+    __bis_SR_register(LPM3_bits + GIE);
+    __no_operation();
+}
+
+void ExitLPM35(void)
+{
+    GPIO_LPM_EXIT();
+
+    PJDIR = 0x0F;   // PJ.0 - PJ.3 set as outputs
+    PJOUT &= ~(BIT0 | BIT1 | BIT2 | BIT3);  // PJ.0 - PJ.3 outputs low
+
+    // For XT1
+    // External clock (XT1) and system clocks setup
+    PJSEL0 |= BIT4 + BIT5;
+
+    PM5CTL0 &= ~LOCKLPM5;
+
+    // RTC Setup
+    //RTCCTL01 |= RTCHOLD + RTCRDYIE; // Hold RTC, enable RTC ready interrupt (1 sec interval)
+    RTCCTL01 |= RTCHOLD;
+
+    RTCCTL01 &= ~RTCHOLD;           //Release RTC hold
+
+    RTCCTL1 |= periodicMode;
+    RTCCTL0 |= RTCTEVIE;                                    // Enable RTC wake event interrupt
+
+    // Timer for button debouncing
+    TB1CCTL0 = CCIE;
+    TB1CCR0 = 125;    // 2 milliseconds
+    TB1CTL = TBSSEL_2 + MC_1 + ID_2 + TBCLR;
+
+
+    // Timer used for long press
+    /*
+    TB0CCTL0 = CCIE;
+    TB0CCR0 = 24576;    // 3 seconds
+
+    TB0CTL = TBSSEL_1 + MC_1 + ID_2 + TBCLR;    // (250 kHz / 8 = 8192)
+    */
+    // Timer for sleeping between LED updating
+    // @TODO Consider running this timer off SMCLK. That way, it is disabled when in sleep mode 3.0
+    TA1CCTL0 = CCIE;
+    TA1CCR0 = 10;                    // TASSEL_2 / ID (250 kHz / 4 == 62500) / 62500 = 1 Hz
+    //TA1CCR0 = 50;                                  // Used for blinking LEDs
+
+    TA1CCR1 = 62500;                       // TASSEL_2 / ID (250 kHz / 4 == 62500) / 63 = ~ 1 kHz
+                                        // This timer is used for updating LEDs
+    TA1CTL = TASSEL_2 + MC_2 + ID_2 + TAIE + TACLR;
+
+    CSCTL0_H = 0xA5;                        // Unlock clock register
+    //CSCTL1 |= DCOFSEL0 + DCOFSEL1;             // Set max. DCO setting (8)
+    CSCTL1 |= DCOFSEL_3;
+    CSCTL2 = SELA_0 + SELS_3 + SELM_3;      //ACLK = XT1 and MCLK = DCO
+    //CHANGE CSCTL3 DIVIDERS!
+    //CSCTL3 = DIVA_0 + DIVS_1 + DIVM_1;
+    CSCTL3 = DIVA_0 + DIVS_5 + DIVM_0;      // ACLK / 1, SMCLK / 32 (250 kHz), MCLK / 1 (8 MHz)
+    CSCTL4 = XT1DRIVE_0;
+    CSCTL4 &= ~XT1OFF;
+
+    do
+    {
+        CSCTL5 &= ~XT1OFFG;     // Clear XT1 fault flag
+        SFRIFG1 &= ~OFIFG;
+    } while (SFRIFG1&OFIFG);
+    CSCTL0_H = 0x01; // Lock clock register
+
+
+
+    // Turn off temp sensor
+    REFCTL0 |= REFTCOFF;
+    REFCTL0 &= ~OFIFG;
+
+    __bis_SR_register(GIE); //Enable interrupts
 }
 
 // RTC_b ISR
@@ -775,14 +917,12 @@ __interrupt void rtc_isr(void)
         case RTCIV_RTCTEVIFG:
         {
             wakeTriggered = 1;
-            __bic_SR_register_on_exit(LPM4_bits);
+
 
             break;
         }
         default:
-            rtc_seconds = 29;
-            rtc_minutes = 29;
-            rtc_hours = 8;
+			break;
     }
 }
 
@@ -952,23 +1092,14 @@ __interrupt void Timer1_A1_ISR(void)
 #pragma vector=PORT1_VECTOR
 __interrupt void Port_1(void)
 {
-
     int interruptSource = P1IV;
-    //displayMode = DISPLAY_MODE_1;
 
-    // Change mode to set time
-    button1_pushed = 1;
-    __bic_SR_register_on_exit(LPM4_bits);
 }
 
 // Port 2 ISR
 #pragma vector=PORT2_VECTOR
 __interrupt void Port_2(void)
 {
-
     int interruptSource = P2IV;
 
-    button2_pushed = 1;
-    __bic_SR_register_on_exit(LPM4_bits);
-    //displayMode = DISPLAY_MODE_0;
 }
