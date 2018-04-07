@@ -1,10 +1,10 @@
 ******************************************************************************
                   MSP430 Linker PC v16.9.4                     
 ******************************************************************************
->> Linked Thu Apr 05 22:34:03 2018
+>> Linked Sat Apr 07 17:07:34 2018
 
 OUTPUT FILE NAME:   <LED_Watch_v1.1.out>
-ENTRY POINT SYMBOL: "_c_int00_noargs_noexit_mpu"  address: 0000eef2
+ENTRY POINT SYMBOL: "_c_int00_noargs_noexit_mpu"  address: 0000f01e
 
 
 MEMORY CONFIGURATION
@@ -16,8 +16,8 @@ MEMORY CONFIGURATION
   PERIPHERALS_16BIT     00000100   00000100  00000000  00000100  RWIX
   INFOB                 00001800   00000080  00000000  00000080  RWIX
   INFOA                 00001880   00000080  00000000  00000080  RWIX
-  RAM                   00001c00   00000400  000000b9  00000347  RWIX
-  FRAM                  0000e000   00001f80  00001000  00000f80  RWIX
+  RAM                   00001c00   00000400  000000b2  0000034e  RWIX
+  FRAM                  0000e000   00001f80  00001118  00000e68  RWIX
   JTAGSIGNATURE         0000ff80   00000004  00000004  00000000  RWIX  ffff 
   BSLSIGNATURE          0000ff84   00000004  00000004  00000000  RWIX  ffff 
   IPESIGNATURE          0000ff88   00000008  00000008  00000000  RWIX  ffff 
@@ -84,84 +84,78 @@ SECTION ALLOCATION MAP
  output                                  attributes/
 section   page    origin      length       input sections
 --------  ----  ----------  ----------   ----------------
-.data      0    00001c00    00000016     UNINITIALIZED
-                  00001c00    00000013     main.obj (.data)
-                  00001c13    00000001     --HOLE--
-                  00001c14    00000002     light_detect.obj (.data)
-
-.bss       0    00001c16    00000003     UNINITIALIZED
-                  00001c16    00000001     (.common:gbl_disp_hours)
-                  00001c17    00000001     (.common:gbl_disp_minutes)
-                  00001c18    00000001     (.common:gbl_disp_seconds)
+.data      0    00001c00    00000012     UNINITIALIZED
+                  00001c00    00000010     main.obj (.data)
+                  00001c10    00000002     light_detect.obj (.data)
 
 .stack     0    00001f60    000000a0     UNINITIALIZED
                   00001f60    00000002     rts430x_sc_sd_eabi.lib : boot.obj (.stack)
                   00001f62    0000009e     --HOLE--
 
 .TI.persistent 
-*          0    0000e000    00000000     UNINITIALIZED
+*          0    0000e000    00000001     
+                  0000e000    00000001     main.obj (.TI.persistent)
 
-.cio       0    0000e000    00000000     UNINITIALIZED
+.cio       0    0000e001    00000000     UNINITIALIZED
 
-.sysmem    0    0000e000    00000000     UNINITIALIZED
+.sysmem    0    0000e001    00000000     UNINITIALIZED
 
-.cinit     0    0000e000    00000020     
-                  0000e000    0000000e     (.cinit..data.load) [load image, compression = lzss]
-                  0000e00e    00000006     (__TI_handler_table)
-                  0000e014    00000004     (.cinit..bss.load) [load image, compression = zero_init]
-                  0000e018    00000008     (__TI_cinit_table)
+.cinit     0    0000e100    00000012     
+                  0000e100    00000009     (.cinit..data.load) [load image, compression = lzss]
+                  0000e109    00000001     --HOLE-- [fill = 0]
+                  0000e10a    00000004     (__TI_handler_table)
+                  0000e10e    00000004     (__TI_cinit_table)
 
-.pinit     0    0000e020    00000000     UNINITIALIZED
+.pinit     0    0000e112    00000000     UNINITIALIZED
 
-.binit     0    0000e020    00000000     
+.binit     0    0000e112    00000000     
 
 .init_array 
-*          0    0000e020    00000000     UNINITIALIZED
+*          0    0000e112    00000000     UNINITIALIZED
 
 .mspabi.exidx 
-*          0    0000e020    00000000     UNINITIALIZED
+*          0    0000e112    00000000     UNINITIALIZED
 
 .mspabi.extab 
-*          0    0000e020    00000000     UNINITIALIZED
+*          0    0000e112    00000000     UNINITIALIZED
 
-.const     0    0000e020    000002d0     
-                  0000e020    0000012c     led_controller.obj (.const:led_minutes)
-                  0000e14c    0000012c     led_controller.obj (.const:led_seconds)
-                  0000e278    00000078     led_controller.obj (.const:led_hours)
+.const     0    0000e112    000002d0     
+                  0000e112    0000012c     led_controller.obj (.const:led_minutes)
+                  0000e23e    0000012c     led_controller.obj (.const:led_seconds)
+                  0000e36a    00000078     led_controller.obj (.const:led_hours)
 
-.text      0    0000e300    00000d00     
-                  0000e300    00000628     main.obj (.text:main)
-                  0000e928    0000010a     led_controller.obj (.text:LED_SetCurrentLED)
-                  0000ea32    00000002     rts430x_sc_sd_eabi.lib : startup.obj (.text:_system_post_cinit)
-                  0000ea34    000000ec     main.obj (.text:initialize)
-                  0000eb20    000000e6     main.obj (.text:ExitLPM35)
-                  0000ec06    00000002     --HOLE-- [fill = 0]
-                  0000ec08    000000d4     main.obj (.text:Timer1_A0_ISR)
-                  0000ecdc    0000007e     rts430x_sc_sd_eabi.lib : autoinit_wdt.obj (.text:_auto_init_hold_wdt)
-                  0000ed5a    0000006e                            : copy_decompress_lzss.obj (.text:decompress:lzss:__TI_decompress_lzss)
-                  0000edc8    00000058                            : cpy_tbl.obj (.text:copy_in)
-                  0000ee20    00000054     main.obj (.text:EnterLPM35)
-                  0000ee74    00000030     main.obj (.text:Timer1_A1_ISR)
-                  0000eea4    00000030     main.obj (.text:Timer1_B0_ISR)
-                  0000eed4    0000001e     rts430x_sc_sd_eabi.lib : mpu_init.obj (.text:__mpu_init)
-                  0000eef2    0000001e                            : boot_special.obj (.text:_c_int00_noargs_noexit_mpu)
-                  0000ef10    0000001e     main.obj (.text:determineNextSleepTime)
-                  0000ef2e    00000002     --HOLE-- [fill = 0]
-                  0000ef30    0000001c     light_detect.obj (.text:measureLightInit)
-                  0000ef4c    0000001c     led_controller.obj (.text:reset_leds)
-                  0000ef68    00000016     light_detect.obj (.text:ADC10_ISR)
-                  0000ef7e    00000014     rts430x_sc_sd_eabi.lib : copy_zero_init.obj (.text:decompress:ZI:__TI_zero_init)
-                  0000ef92    00000014                            : mult16_f5hw.obj (.text)
-                  0000efa6    00000012                            : copy_decompress_none.obj (.text:decompress:none:__TI_decompress_none)
-                  0000efb8    00000012                            : memcpy.obj (.text:memcpy)
-                  0000efca    00000002     --HOLE-- [fill = 0]
-                  0000efcc    0000000c     main.obj (.text:rtc_isr)
-                  0000efd8    0000000a     main.obj (.text:Port_1)
-                  0000efe2    00000002     --HOLE-- [fill = 0]
-                  0000efe4    0000000a     main.obj (.text:Port_2)
-                  0000efee    00000008     rts430x_sc_sd_eabi.lib : isr_trap.obj (.text:_isr:__TI_ISR_TRAP)
-                  0000eff6    00000006                            : exit.obj (.text:abort)
-                  0000effc    00000004                            : pre_init.obj (.text:_system_pre_init)
+.text      0    0000e400    00000d18     
+                  0000e400    00000638     main.obj (.text:main)
+                  0000ea38    0000010a     led_controller.obj (.text:LED_SetCurrentLED)
+                  0000eb42    00000002     rts430x_sc_sd_eabi.lib : startup.obj (.text:_system_post_cinit)
+                  0000eb44    000000f0     main.obj (.text:initialize)
+                  0000ec34    000000ee     main.obj (.text:ExitLPM35)
+                  0000ed22    00000002     --HOLE-- [fill = 0]
+                  0000ed24    000000d4     main.obj (.text:Timer1_A0_ISR)
+                  0000edf8    0000007e     rts430x_sc_sd_eabi.lib : autoinit_wdt.obj (.text:_auto_init_hold_wdt)
+                  0000ee76    0000006e                            : copy_decompress_lzss.obj (.text:decompress:lzss:__TI_decompress_lzss)
+                  0000eee4    00000064     main.obj (.text:EnterLPM35)
+                  0000ef48    00000058     rts430x_sc_sd_eabi.lib : cpy_tbl.obj (.text:copy_in)
+                  0000efa0    00000030     main.obj (.text:Timer1_A1_ISR)
+                  0000efd0    00000030     main.obj (.text:Timer1_B0_ISR)
+                  0000f000    0000001e     rts430x_sc_sd_eabi.lib : mpu_init.obj (.text:__mpu_init)
+                  0000f01e    0000001e                            : boot_special.obj (.text:_c_int00_noargs_noexit_mpu)
+                  0000f03c    0000001e     main.obj (.text:determineNextSleepTime)
+                  0000f05a    00000002     --HOLE-- [fill = 0]
+                  0000f05c    0000001c     light_detect.obj (.text:measureLightInit)
+                  0000f078    0000001c     led_controller.obj (.text:reset_leds)
+                  0000f094    00000016     light_detect.obj (.text:ADC10_ISR)
+                  0000f0aa    00000014     rts430x_sc_sd_eabi.lib : mult16_f5hw.obj (.text)
+                  0000f0be    00000012                            : copy_decompress_none.obj (.text:decompress:none:__TI_decompress_none)
+                  0000f0d0    00000012                            : memcpy.obj (.text:memcpy)
+                  0000f0e2    00000002     --HOLE-- [fill = 0]
+                  0000f0e4    0000000c     main.obj (.text:rtc_isr)
+                  0000f0f0    0000000a     main.obj (.text:Port_1)
+                  0000f0fa    00000002     --HOLE-- [fill = 0]
+                  0000f0fc    0000000a     main.obj (.text:Port_2)
+                  0000f106    00000008     rts430x_sc_sd_eabi.lib : isr_trap.obj (.text:_isr:__TI_ISR_TRAP)
+                  0000f10e    00000006                            : exit.obj (.text:abort)
+                  0000f114    00000004                            : pre_init.obj (.text:_system_pre_init)
 
 $fill000   0    0000ff80    00000004     
                   0000ff80    00000004     --HOLE-- [fill = ffff]
@@ -262,11 +256,11 @@ MODULE SUMMARY
        Module                     code   ro data   rw data
        ------                     ----   -------   -------
     .\
-       main.obj                   2496   12        22     
+       main.obj                   2540   12        17     
        led_controller.obj         294    720       0      
        light_detect.obj           50     2         2      
     +--+--------------------------+------+---------+---------+
-       Total:                     2840   734       24     
+       Total:                     2884   734       19     
                                                           
     C:\ti\ccsv7\tools\compiler\ti-cgt-msp430_16.9.4.LTS\lib\rts430x_sc_sd_eabi.lib
        autoinit_wdt.obj           126    0         0      
@@ -274,7 +268,6 @@ MODULE SUMMARY
        cpy_tbl.obj                88     0         0      
        boot_special.obj           30     0         0      
        mpu_init.obj               30     0         0      
-       copy_zero_init.obj         20     0         0      
        mult16_f5hw.obj            20     0         0      
        copy_decompress_none.obj   18     0         0      
        memcpy.obj                 18     0         0      
@@ -301,27 +294,25 @@ MODULE SUMMARY
        int54.obj                  0      2         0      
        startup.obj                2      0         0      
     +--+--------------------------+------+---------+---------+
-       Total:                     480    36        0      
+       Total:                     460    36        0      
                                                           
        Stack:                     0      0         160    
-       Linker Generated:          0      32        0      
+       Linker Generated:          0      17        0      
     +--+--------------------------+------+---------+---------+
-       Grand Total:               3320   802       184    
+       Grand Total:               3344   787       179    
 
 
 LINKER GENERATED COPY TABLES
 
-__TI_cinit_table @ 0000e018 records: 2, size/record: 4, table size: 8
-	.data: load addr=0000e000, load size=0000000e bytes, run addr=00001c00, run size=00000016 bytes, compression=lzss
-	.bss: load addr=0000e014, load size=00000004 bytes, run addr=00001c16, run size=00000003 bytes, compression=zero_init
+__TI_cinit_table @ 0000e10e records: 1, size/record: 4, table size: 4
+	.data: load addr=0000e100, load size=00000009 bytes, run addr=00001c00, run size=00000012 bytes, compression=lzss
 
 
 LINKER GENERATED HANDLER TABLE
 
-__TI_handler_table @ 0000e00e records: 3, size/record: 2, table size: 6
-	index: 0, handler: __TI_zero_init
-	index: 1, handler: __TI_decompress_lzss
-	index: 2, handler: __TI_decompress_none
+__TI_handler_table @ 0000e10a records: 2, size/record: 2, table size: 4
+	index: 0, handler: __TI_decompress_lzss
+	index: 1, handler: __TI_decompress_none
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -358,11 +349,11 @@ address   name
 00000712  ADC10MEM0                 
 00000713  ADC10MEM0_H               
 00000712  ADC10MEM0_L               
-0000ef68  ADC10_ISR                 
-00001c14  ADC_Result                
+0000f094  ADC10_ISR                 
+00001c10  ADC_Result                
 000004be  BCD2BIN                   
 000004bc  BIN2BCD                   
-0000eff6  C$$EXIT                   
+0000f10e  C$$EXIT                   
 000008c0  CDCTL0                    
 000008c1  CDCTL0_H                  
 000008c0  CDCTL0_L                  
@@ -462,8 +453,8 @@ address   name
 0000050e  DMAIV                     
 0000050f  DMAIV_H                   
 0000050e  DMAIV_L                   
-0000ee20  EnterLPM35                
-0000eb20  ExitLPM35                 
+0000eee4  EnterLPM35                
+0000ec34  ExitLPM35                 
 00000140  FRCTL0                    
 00000141  FRCTL0_H                  
 00000140  FRCTL0_L                  
@@ -473,7 +464,7 @@ address   name
 00000146  GCCTL1                    
 00000147  GCCTL1_H                  
 00000146  GCCTL1_L                  
-0000e928  LED_SetCurrentLED         
+0000ea38  LED_SetCurrentLED         
 000004c4  MAC                       
 000004da  MAC32H                    
 000004db  MAC32H_H                  
@@ -628,8 +619,8 @@ address   name
 0000012a  PMMIFG                    
 0000012b  PMMIFG_H                  
 0000012a  PMMIFG_L                  
-0000efd8  Port_1                    
-0000efe4  Port_2                    
+0000f0f0  Port_1                    
+0000f0fc  Port_2                    
 000001b0  REFCTL0                   
 000001b1  REFCTL0_H                 
 000001b0  REFCTL0_L                 
@@ -780,9 +771,9 @@ address   name
 00000460  TB2EX0                    
 0000046e  TB2IV                     
 00000450  TB2R                      
-0000ec08  Timer1_A0_ISR             
-0000ee74  Timer1_A1_ISR             
-0000eea4  Timer1_B0_ISR             
+0000ed24  Timer1_A0_ISR             
+0000efa0  Timer1_A1_ISR             
+0000efd0  Timer1_B0_ISR             
 000005d0  UCA0ABCTL                 
 000005c6  UCA0BRW                   
 000005c7  UCA0BRW_H                 
@@ -899,15 +890,15 @@ address   name
 000000a0  __STACK_SIZE              
 UNDEFED   __TI_BINIT_Base           
 UNDEFED   __TI_BINIT_Limit          
-0000e018  __TI_CINIT_Base           
-0000e020  __TI_CINIT_Limit          
-0000e00e  __TI_Handler_Table_Base   
-0000e014  __TI_Handler_Table_Limit  
+0000e10e  __TI_CINIT_Base           
+0000e112  __TI_CINIT_Limit          
+0000e10a  __TI_Handler_Table_Base   
+0000e10e  __TI_Handler_Table_Limit  
 UNDEFED   __TI_INITARRAY_Base       
 UNDEFED   __TI_INITARRAY_Limit      
-0000efee  __TI_ISR_TRAP             
-0000ed5a  __TI_decompress_lzss      
-0000efa6  __TI_decompress_none      
+0000f106  __TI_ISR_TRAP             
+0000ee76  __TI_decompress_lzss      
+0000f0be  __TI_decompress_none      
 0000ffce  __TI_int31                
 0000ffd0  __TI_int32                
 0000ffd2  __TI_int33                
@@ -935,55 +926,49 @@ UNDEFED   __TI_INITARRAY_Limit
 ffffffff  __TI_pprof_out_hndl       
 ffffffff  __TI_prof_data_size       
 ffffffff  __TI_prof_data_start      
-0000ef7e  __TI_zero_init            
 ffffffff  __c_args__                
-0000eed4  __mpu_init                
+0000f000  __mpu_init                
 00007513  __mpusam                  
-00000300  __mpuseg                  
-0000ef92  __mspabi_mpyi_f5hw        
-0000ecdc  _auto_init_hold_wdt       
-0000eef2  _c_int00_noargs_noexit_mpu
+00000401  __mpuseg                  
+0000f0aa  __mspabi_mpyi_f5hw        
+0000edf8  _auto_init_hold_wdt       
+0000f01e  _c_int00_noargs_noexit_mpu
 0000fffe  _reset_vector             
 00001f60  _stack                    
-0000ea32  _system_post_cinit        
-0000effc  _system_pre_init          
-0000eff6  abort                     
-0000edc8  copy_in                   
-0000ef10  determineNextSleepTime    
-00001c06  displayMode               
-0000e000  fram_ro_start             
+0000eb42  _system_post_cinit        
+0000f114  _system_pre_init          
+0000f10e  abort                     
+0000ef48  copy_in                   
+0000f03c  determineNextSleepTime    
+0000e000  displayMode               
+0000e100  fram_ro_start             
 0000e000  fram_rw_start             
-0000e300  fram_rx_start             
-00001c09  gb_button1_hold_seconds   
-00001c0a  gb_button2_hold_seconds   
+0000e400  fram_rx_start             
+00001c07  gb_button1_hold_seconds   
+00001c08  gb_button2_hold_seconds   
 00001c01  gbl_blink_b               
 00001c02  gbl_blink_count           
-00001c16  gbl_disp_hours            
-00001c17  gbl_disp_minutes          
-00001c18  gbl_disp_seconds          
 00001c00  gbl_nextState             
 00001c04  gbl_selectedRow           
-00001c05  gbl_setNewTime_b          
-00001c07  global_shift_reg_1        
-00001c08  global_shift_reg_2        
-0000ea34  initialize                
-0000e300  main                      
-0000ef30  measureLightInit          
-0000efb8  memcpy                    
-00000000  mpusb1                    
-00000003  mpusb2                    
-00001c0c  periodicMode              
-0000ef4c  reset_leds                
-0000efcc  rtc_isr                   
-00001c0b  wakeTriggered             
+00001c05  global_shift_reg_1        
+00001c06  global_shift_reg_2        
+0000eb44  initialize                
+0000e400  main                      
+0000f05c  measureLightInit          
+0000f0d0  memcpy                    
+00000001  mpusb1                    
+00000004  mpusb2                    
+0000f078  reset_leds                
+0000f0e4  rtc_isr                   
+00001c09  wakeTriggered             
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
 
 address   name                      
 -------   ----                      
-00000000  mpusb1                    
-00000003  mpusb2                    
+00000001  mpusb1                    
+00000004  mpusb2                    
 000000a0  __STACK_SIZE              
 00000100  SFRIE1                    
 00000100  SFRIE1_L                  
@@ -1148,7 +1133,6 @@ address   name
 0000023c  PBIFG_L                   
 0000023d  PBIFG_H                   
 0000023e  P4IV                      
-00000300  __mpuseg                  
 00000320  PJIN                      
 00000320  PJIN_L                    
 00000321  PJIN_H                    
@@ -1201,6 +1185,7 @@ address   name
 000003e0  TB0EX0                    
 000003ee  TB0IV                     
 00000400  TB1CTL                    
+00000401  __mpuseg                  
 00000402  TB1CCTL0                  
 00000404  TB1CCTL1                  
 00000406  TB1CCTL2                  
@@ -1546,57 +1531,51 @@ address   name
 00001c01  gbl_blink_b               
 00001c02  gbl_blink_count           
 00001c04  gbl_selectedRow           
-00001c05  gbl_setNewTime_b          
-00001c06  displayMode               
-00001c07  global_shift_reg_1        
-00001c08  global_shift_reg_2        
-00001c09  gb_button1_hold_seconds   
-00001c0a  gb_button2_hold_seconds   
-00001c0b  wakeTriggered             
-00001c0c  periodicMode              
-00001c14  ADC_Result                
-00001c16  gbl_disp_hours            
-00001c17  gbl_disp_minutes          
-00001c18  gbl_disp_seconds          
+00001c05  global_shift_reg_1        
+00001c06  global_shift_reg_2        
+00001c07  gb_button1_hold_seconds   
+00001c08  gb_button2_hold_seconds   
+00001c09  wakeTriggered             
+00001c10  ADC_Result                
 00001f60  _stack                    
 00002000  __STACK_END               
 00007513  __mpusam                  
-0000e000  fram_ro_start             
+0000e000  displayMode               
 0000e000  fram_rw_start             
-0000e00e  __TI_Handler_Table_Base   
-0000e014  __TI_Handler_Table_Limit  
-0000e018  __TI_CINIT_Base           
-0000e020  __TI_CINIT_Limit          
-0000e300  fram_rx_start             
-0000e300  main                      
-0000e928  LED_SetCurrentLED         
-0000ea32  _system_post_cinit        
-0000ea34  initialize                
-0000eb20  ExitLPM35                 
-0000ec08  Timer1_A0_ISR             
-0000ecdc  _auto_init_hold_wdt       
-0000ed5a  __TI_decompress_lzss      
-0000edc8  copy_in                   
-0000ee20  EnterLPM35                
-0000ee74  Timer1_A1_ISR             
-0000eea4  Timer1_B0_ISR             
-0000eed4  __mpu_init                
-0000eef2  _c_int00_noargs_noexit_mpu
-0000ef10  determineNextSleepTime    
-0000ef30  measureLightInit          
-0000ef4c  reset_leds                
-0000ef68  ADC10_ISR                 
-0000ef7e  __TI_zero_init            
-0000ef92  __mspabi_mpyi_f5hw        
-0000efa6  __TI_decompress_none      
-0000efb8  memcpy                    
-0000efcc  rtc_isr                   
-0000efd8  Port_1                    
-0000efe4  Port_2                    
-0000efee  __TI_ISR_TRAP             
-0000eff6  C$$EXIT                   
-0000eff6  abort                     
-0000effc  _system_pre_init          
+0000e100  fram_ro_start             
+0000e10a  __TI_Handler_Table_Base   
+0000e10e  __TI_CINIT_Base           
+0000e10e  __TI_Handler_Table_Limit  
+0000e112  __TI_CINIT_Limit          
+0000e400  fram_rx_start             
+0000e400  main                      
+0000ea38  LED_SetCurrentLED         
+0000eb42  _system_post_cinit        
+0000eb44  initialize                
+0000ec34  ExitLPM35                 
+0000ed24  Timer1_A0_ISR             
+0000edf8  _auto_init_hold_wdt       
+0000ee76  __TI_decompress_lzss      
+0000eee4  EnterLPM35                
+0000ef48  copy_in                   
+0000efa0  Timer1_A1_ISR             
+0000efd0  Timer1_B0_ISR             
+0000f000  __mpu_init                
+0000f01e  _c_int00_noargs_noexit_mpu
+0000f03c  determineNextSleepTime    
+0000f05c  measureLightInit          
+0000f078  reset_leds                
+0000f094  ADC10_ISR                 
+0000f0aa  __mspabi_mpyi_f5hw        
+0000f0be  __TI_decompress_none      
+0000f0d0  memcpy                    
+0000f0e4  rtc_isr                   
+0000f0f0  Port_1                    
+0000f0fc  Port_2                    
+0000f106  __TI_ISR_TRAP             
+0000f10e  C$$EXIT                   
+0000f10e  abort                     
+0000f114  _system_pre_init          
 0000ffce  __TI_int31                
 0000ffd0  __TI_int32                
 0000ffd2  __TI_int33                
@@ -1631,4 +1610,4 @@ UNDEFED   __TI_BINIT_Limit
 UNDEFED   __TI_INITARRAY_Base       
 UNDEFED   __TI_INITARRAY_Limit      
 
-[648 symbols]
+[642 symbols]

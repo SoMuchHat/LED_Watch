@@ -27,6 +27,6 @@
 #define MINUTES 1
 #define SECONDS 2
 
-void initialize();
+void initialize(char rtcPeriodicMode);
 
 #endif /* HEADERS_HEAD_H_ */
