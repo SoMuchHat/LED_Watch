@@ -17,7 +17,6 @@ typedef struct {
     char PJ;
 } ledCommand_t;
 
-static char test = 0;
 
 static const ledCommand_t led_seconds[60] = {{ (char)P1_OFF,                    (char)(P2_OFF ^ BIT3),              (char)P3_OFF,                       (char)P4_OFF,           (char)(PJ_OFF | BIT0) },    // 0 seconds
                                              { (char)P1_OFF,                    (char)((P2_OFF ^ BIT3) | BIT7),     (char)P3_OFF,                       (char)P4_OFF,           (char)PJ_OFF },             // 1 second

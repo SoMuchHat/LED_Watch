@@ -31,14 +31,6 @@ unsigned int measureLightIntensity(unsigned char hour)
 
     reset_leds();                   // Turn off 12th hour LED
 
-    P1OUT = (char)(P1_OFF | BIT1);   // Charge LED up by reversing current through it
-    PJOUT = (char)(PJ_OFF ^ BIT0);
-    P2OUT = (char)(P2_OFF ^ (BIT0 + BIT1 + BIT6 + BIT7));
-    P3OUT = (char)(P3_OFF ^ (BIT4 + BIT6 + BIT7));
-    P4OUT = (char)(P4_OFF ^ BIT0);
-
-    reset_leds();                   // Turn off 12th hour LED
-
     P1DIR = 0x3D;
 
     // Change P1.1 to be ADC input
@@ -51,36 +43,48 @@ unsigned int measureLightIntensity(unsigned char hour)
     // Sleep until ADC done sampling and result is stored
     //__bis_SR_register(CPUOFF + GIE);
     while (ADC10CTL1 & ADC10BUSY);
-    //__no_operation();
+    __no_operation();
 
     // Store current voltage before discharge
     startV = ADC_Result;
 
-    __delay_cycles(500000);
+    __delay_cycles(5000);
 
     // Measure voltage after discharge time
     // Trigger ADC sample start
     ADC10CTL0 |= ADC10ENC + ADC10SC;
     //unsigned int temp2 = ADC10MEM0;
     // Sleep until ADC done sampling and result is stored
+    //__bis_SR_register(CPUOFF + GIE);
     while (ADC10CTL1 & ADC10BUSY);
-    //__no_operation();
+    __no_operation();
 
     endV = ADC_Result;
 
     unsigned int diff = 0;
-
 
     if (startV > endV)
     {
         diff = startV - endV;
     }
 
+    if (diff < 25)
+    {
+       diff = 25;
+    }
+
+    diff -= 25;
+
+    if (diff > 50)
+    {
+        diff = 50;
+    }
+
     P1DIR = 0x3F;
     P1SEL0 &= ~BIT1;                // Change P1.1 to be digital output again
     P1SEL1 &= ~BIT1;
 
-    return diff;
+    return (50 - diff);
 }
 
 

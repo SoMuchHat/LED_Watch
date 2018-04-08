@@ -32,6 +32,9 @@
 #pragma PERSISTENT(displayMode)
 volatile char displayMode = DISPLAY_MODE_0;                 // Current display mode
 
+volatile unsigned char dim = 1;
+volatile unsigned int dim_count = 0;
+volatile unsigned int gbl_dim_amount = 0;
 
 volatile unsigned char gbl_nextState = 1;					// Global copy of nextState for interrupts
 volatile unsigned char gbl_blink_b = 1;						// Blink off = 0, blink on = 1
@@ -46,6 +49,7 @@ volatile unsigned char gb_button2_hold_seconds = 0;			// Global time button 2 ha
 
 volatile unsigned char wakeTriggered = 0;                        // If RTC time event caused wake
 
+volatile unsigned char gbl_measureLight_b = 1;
 
 
 void EnterLPM35(void);
@@ -85,6 +89,7 @@ void main(void)
 
     char periodicMode = PERIODIC_MINUTE;                    // RTC Periodic Alarm Mode
 	unsigned char measureLight_b = 0;					    // Should light measure start
+	unsigned char dim_amount = 0;
 
 	/*
 	 * If we are exiting from LPM3.5, only configure modules outside of RTC. Otherwise, this is a fresh
@@ -145,6 +150,8 @@ void main(void)
         __disable_interrupt();
 		
         unsigned char nextState = gbl_nextState;
+        measureLight_b = gbl_measureLight_b;
+        gbl_measureLight_b = 0;
 
 		// Update time from RTC registers if they are currently valid
         if ((RTCCTL01 & RTCRDY) != 0)
@@ -165,7 +172,7 @@ void main(void)
                 temp_seconds = RTCSEC;
                 temp_minutes = RTCMIN;
                 temp_hours = RTCHOUR;
-                measureLight_b = 1;
+                //measureLight_b = 1;
 
 				/*
 				 * Ensure that the RTCRDY bit is still set. Could end up in a situation where RTCRDY was
@@ -217,7 +224,7 @@ void main(void)
             if (measureLight_b == 1)
             {
                 measureLight_b = 0;
-                //unsigned int light = measureLightIntensity(disp_hours);
+                dim_amount = (unsigned char)measureLightIntensity(disp_hours);
             }
 
             if (displayMode == DISPLAY_MODE_0)
@@ -236,62 +243,82 @@ void main(void)
                     LED_SetCurrentLED(disp_hours, selectedRow);
                     break;
                 default:
+                    reset_leds();
                     break;
                 }
             }
 
             else if (displayMode == DISPLAY_MODE_1)
             {
-                static char i = 0;
+                static char secs_i = 0;
+                static char mins_i = 0;
 
-                if (i == 1)
+                char hours = disp_hours;
+                if (hours >= 12)
                 {
-                    disp_seconds = disp_minutes;
-                }
-                if (i == 2)
-                {
-                    char hours = disp_hours;
-                    if (hours >= 12)
-                    {
-                        hours = hours - 12;
-                    }
-                    disp_seconds = (5 * hours);
-                    disp_seconds = (disp_seconds == 0) ? 0 : (disp_seconds);
-                    disp_minutes = 5 * hours;
-                    disp_minutes = (disp_minutes == 0) ? 0 : (disp_minutes);
+                    hours = hours - 12;
                 }
 
                 if (selectedRow == SECONDS_ROW)
                 {
+                    static char i = 0;
+                    if (i == 0)
+                    {
+                        secs_i = disp_minutes;
+                    }
+                    else if (i == 1)
+                    {
+                        secs_i = (5 * hours);
+                        secs_i = (secs_i == 0) ? 0 : (secs_i);
+                    }
+                    else
+                    {
+                        secs_i = disp_seconds;
+                    }
+
                     i = i + 1;
                     if (i >= 3)
                     {
                         i = 0;
                     }
                 }
+
                 if (selectedRow == MINUTES_ROW)
                 {
-                    i = i + 1;
-                    if (i >= 3)
+                    static char i = 0;
+                    if (i == 0)
                     {
-                        i = 1;
+                        mins_i = disp_minutes;
+                    }
+                    else if (i == 1)
+                    {
+                        mins_i = (5 * hours);
+                        mins_i = (mins_i == 0) ? 0 : (mins_i);
+                    }
+
+                    i ++;
+                    if (i >= 2)
+                    {
+                        i = 0;
                     }
                 }
+
 
                 switch (selectedRow)
                 {
                 case SECONDS_ROW:
-                    LED_SetCurrentLED(disp_seconds, selectedRow);
+                    LED_SetCurrentLED(secs_i, selectedRow);
                     break;
 
                 case MINUTES_ROW:
-                    LED_SetCurrentLED(disp_minutes, selectedRow);
+                    LED_SetCurrentLED(mins_i, selectedRow);
                     break;
 
                 case HOURS_ROW:
                     LED_SetCurrentLED(disp_hours, selectedRow);
                     break;
                 default:
+                    reset_leds();
                     break;
                 }
             }
@@ -378,6 +405,7 @@ void main(void)
                     }
                     break;
                 default:
+                    reset_leds();
                     break;
                 }
             }
@@ -402,6 +430,7 @@ void main(void)
                     LED_SetCurrentLED(disp_hours, selectedRow);
                     break;
                 default:
+                    reset_leds();
                     break;
                 }
             }
@@ -663,6 +692,7 @@ void main(void)
 
 
         gbl_nextState = nextState;
+        gbl_dim_amount = dim_amount;
 
         __enable_interrupt();
 
@@ -735,7 +765,7 @@ void initialize(char rtcPeriodicMode)
 
     RTCSEC = 0;                  // Set seconds to 0
     RTCMIN = 0;                  // Set minutes to 0
-    RTCHOUR = 12;                 // Set hours to 0
+    RTCHOUR = 16;                 // Set hours to 0
 
     RTCCTL01 &= ~RTCHOLD;           //Release RTC hold
 
@@ -769,7 +799,7 @@ void initialize(char rtcPeriodicMode)
 	REFCTL0 |= REFTCOFF;
 	REFCTL0 &= ~OFIFG;
 
-	displayMode = DISPLAY_MODE_2;
+	displayMode = DISPLAY_MODE_0;
 
 	__bis_SR_register(GIE); //Enable interrupts
 }
@@ -930,12 +960,39 @@ __interrupt void Timer1_A0_ISR(void)
 {
     if (gbl_nextState != SetTime)
     {
-        if (displayMode == DISPLAY_MODE_0 || displayMode == DISPLAY_MODE_1 )
+        //if (displayMode == DISPLAY_MODE_0 || displayMode == DISPLAY_MODE_1 )
+        if (displayMode == DISPLAY_MODE_0)
         {
-            gbl_selectedRow ++;
-            if (gbl_selectedRow >= NO_ROW)
+            if (dim == 1)
             {
-                gbl_selectedRow = HOURS_ROW;
+                if (gbl_selectedRow < NO_ROW)
+                {
+                    gbl_selectedRow += NO_ROW;
+                    dim_count = 0;
+                }
+                else if (dim_count >= gbl_dim_amount) // 30 max
+                //else if (dim_count >= 0)
+                {
+                    gbl_selectedRow -= NO_ROW;
+                    gbl_selectedRow ++;
+
+                    if (gbl_selectedRow == NO_ROW)
+                    {
+                        gbl_selectedRow = HOURS_ROW;
+                    }
+                }
+                else
+                {
+                    dim_count ++;
+                }
+            }
+            else
+            {
+                gbl_selectedRow ++;
+                if (gbl_selectedRow >= NO_ROW)
+                {
+                    gbl_selectedRow = HOURS_ROW;
+                }
             }
         }
         else if (displayMode == DISPLAY_MODE_1)
@@ -949,11 +1006,11 @@ __interrupt void Timer1_A0_ISR(void)
                 }
                 else
                 {
-                    gbl_selectedRow = 0;
+                    gbl_selectedRow += NO_ROW;
                     count = 0;
                 }
             }
-            if (gbl_selectedRow == MINUTES_ROW)
+            else if (gbl_selectedRow == MINUTES_ROW)
             {
                 if (count < 2)
                 {
@@ -961,13 +1018,31 @@ __interrupt void Timer1_A0_ISR(void)
                 }
                 else
                 {
-                    gbl_selectedRow ++;
+                    gbl_selectedRow += NO_ROW;
                     count = 0;
                 }
             }
+            else if (gbl_selectedRow == HOURS_ROW)
+            {
+                gbl_selectedRow += NO_ROW;
+            }
             else
             {
-                gbl_selectedRow ++;
+                if (dim_count >= gbl_dim_amount)
+                {
+                    dim_count = 0;
+                    gbl_selectedRow -= NO_ROW;
+                    gbl_selectedRow ++;
+
+                    if (gbl_selectedRow == NO_ROW)
+                    {
+                        gbl_selectedRow = HOURS_ROW;
+                    }
+                }
+                else
+                {
+                    dim_count ++;
+                }
             }
 
         }
@@ -1050,6 +1125,8 @@ __interrupt void Timer1_A1_ISR(void)
         {
             gb_button2_hold_seconds = 0;
         }
+
+        gbl_measureLight_b = 1;
 
         break;
     }
