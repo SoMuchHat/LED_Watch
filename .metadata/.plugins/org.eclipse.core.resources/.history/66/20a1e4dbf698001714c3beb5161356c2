@@ -1,0 +1,38 @@
+################################################################################
+# Automatically-generated file. Do not edit!
+################################################################################
+
+# Add inputs and outputs from these tool invocations to the build variables 
+ASM_SRCS += \
+../fram-utilities/ctpl/ctpl_low_level.asm 
+
+C_SRCS += \
+../fram-utilities/ctpl/ctpl.c 
+
+OBJS += \
+./fram-utilities/ctpl/ctpl.obj \
+./fram-utilities/ctpl/ctpl_low_level.obj 
+
+ASM_DEPS += \
+./fram-utilities/ctpl/ctpl_low_level.pp 
+
+C_DEPS += \
+./fram-utilities/ctpl/ctpl.pp 
+
+C_DEPS__QUOTED += \
+"fram-utilities\ctpl\ctpl.pp" 
+
+OBJS__QUOTED += \
+"fram-utilities\ctpl\ctpl.obj" \
+"fram-utilities\ctpl\ctpl_low_level.obj" 
+
+ASM_DEPS__QUOTED += \
+"fram-utilities\ctpl\ctpl_low_level.pp" 
+
+C_SRCS__QUOTED += \
+"../fram-utilities/ctpl/ctpl.c" 
+
+ASM_SRCS__QUOTED += \
+"../fram-utilities/ctpl/ctpl_low_level.asm" 
+
+
