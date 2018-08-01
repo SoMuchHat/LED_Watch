@@ -1,4 +1,4 @@
-update=7/12/2017 9:43:09 PM
+update=9/16/2017 8:55:53 PM
 version=1
 last_client=kicad
 [pcbnew]
@@ -27,7 +27,7 @@ NetIExt=net
 version=1
 [eeschema]
 version=1
-LibDir=
+LibDir=LED_Watch.pretty
 [eeschema/libraries]
 LibName1=power
 LibName2=device
