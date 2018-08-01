@@ -1,0 +1,2 @@
+- Missing ground connections between crystal capacitors
+- Two grounds are separated. MCU is not connected to the ground plane

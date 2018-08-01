@@ -1,0 +1,45 @@
+################################################################################
+# Automatically-generated file. Do not edit!
+################################################################################
+
+# Add inputs and outputs from these tool invocations to the build variables 
+CMD_SRCS += \
+../ctpl_lnk_msp430fr5721.cmd 
+
+C_SRCS += \
+../ctpl_msp430fr5721.c \
+../ctpl_pre_init.c \
+../led_controller.c \
+../main.c 
+
+OBJS += \
+./ctpl_msp430fr5721.obj \
+./ctpl_pre_init.obj \
+./led_controller.obj \
+./main.obj 
+
+C_DEPS += \
+./ctpl_msp430fr5721.pp \
+./ctpl_pre_init.pp \
+./led_controller.pp \
+./main.pp 
+
+C_DEPS__QUOTED += \
+"ctpl_msp430fr5721.pp" \
+"ctpl_pre_init.pp" \
+"led_controller.pp" \
+"main.pp" 
+
+OBJS__QUOTED += \
+"ctpl_msp430fr5721.obj" \
+"ctpl_pre_init.obj" \
+"led_controller.obj" \
+"main.obj" 
+
+C_SRCS__QUOTED += \
+"../ctpl_msp430fr5721.c" \
+"../ctpl_pre_init.c" \
+"../led_controller.c" \
+"../main.c" 
+
+
